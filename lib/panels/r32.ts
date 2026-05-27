@@ -3,7 +3,7 @@
 
 import type { Match } from "../data.js";
 import { getTheme, type Theme } from "../theme.js";
-import { card, chip, dot, rect, text } from "../svg.js";
+import { card, dot, rect, teamMark, text } from "../svg.js";
 import {
   computeGroups,
   thirdPlaceRanking,
@@ -16,7 +16,7 @@ const TOP = 68;
 const ROW_H = 27;
 const CUT_GAP = 20;
 
-const X = { dot: 20, rank: 36, chip: 52, name: 116, grp: 300, gd: 388, pts: 450 };
+const X = { dot: 20, rank: 36, flag: 52, name: 88, grp: 300, gd: 388, pts: 450 };
 
 export interface R32Opts {
   theme: string | undefined;
@@ -78,7 +78,7 @@ function renderRow(e: ThirdPlaceEntry, i: number, theme: Theme): string[] {
   if (i % 2 === 1) out.push(rect(8, yTop, W - 16, ROW_H, { fill: theme.headerBg, r: 5 }));
   out.push(dot(X.dot, yMid, 4, color));
   out.push(text(String(e.rank), { x: X.rank, y: baseline, size: 11.5, fill: theme.dim, mono: true }));
-  out.push(chip(X.chip, yMid - 10, e.row.team.a3, theme, { w: 44, h: 20 }));
+  out.push(teamMark(X.flag, yMid, e.row.team, theme, 28, 19));
   out.push(
     text(truncate(e.row.team.name, 20), {
       x: X.name,

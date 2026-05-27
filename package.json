@@ -1,11 +1,17 @@
 {
-  "name": "wc26-widget",
+  "name": "world-cup-2026-readme-widget",
   "version": "0.1.0",
   "private": true,
   "description": "Embeddable, self-updating FIFA World Cup 2026 panels for your GitHub README — live match, group standings, and a Round-of-32 qualification tracker. No API key.",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moose25/world-cup-2026-readme-widget.git"
+  },
+  "homepage": "https://github.com/moose25/world-cup-2026-readme-widget#readme",
   "scripts": {
     "preview": "tsx scripts/preview.ts",
+    "build:flags": "tsx scripts/build-flags.ts",
     "typecheck": "tsc --noEmit",
     "dev": "vercel dev"
   },

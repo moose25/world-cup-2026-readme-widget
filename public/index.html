@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>World Cup 2026 README Widget — embeddable live panels</title>
+<meta name="description" content="Embeddable, self-updating FIFA World Cup 2026 panels for your GitHub README, blog, or wiki. Live match, group standings, countdown, and a Round-of-32 qualification tracker. No API key." />
+<meta property="og:title" content="World Cup 2026 README Widget" />
+<meta property="og:description" content="Self-updating World Cup 2026 panels you can embed anywhere with one line. Live match, standings, countdown, Round-of-32 tracker." />
+<meta property="og:type" content="website" />
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --header: #1f2630; --border: #30363d;
+    --text: #e6edf3; --dim: #8b949e; --accent: #58a6ff; --accent2: #3fb950;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  a { color: var(--accent); }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 20px; }
+  header.hero { text-align: center; padding: 56px 20px 28px; }
+  .hero h1 { font-size: 2.1rem; margin: 0 0 10px; letter-spacing: -0.5px; }
+  .hero p { color: var(--dim); font-size: 1.08rem; max-width: 620px; margin: 0 auto 20px; }
+  .cta { display: inline-flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+    padding: 9px 16px; border-radius: 8px; font-weight: 600; font-size: 0.95rem;
+    border: 1px solid var(--border); color: var(--text); background: var(--header);
+  }
+  .btn.primary { background: var(--accent2); border-color: var(--accent2); color: #04260f; }
+  .showcase { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; padding: 12px 0 8px; }
+  .showcase img { max-width: 100%; filter: drop-shadow(0 4px 14px rgba(0,0,0,.4)); }
+  h2.section { font-size: 1.3rem; margin: 44px 0 14px; }
+  .builder {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+  }
+  .controls { display: flex; flex-direction: column; gap: 14px; }
+  label { display: block; font-size: 0.82rem; color: var(--dim); margin-bottom: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
+  select, input {
+    width: 100%; padding: 8px 10px; border-radius: 7px; border: 1px solid var(--border);
+    background: var(--bg); color: var(--text); font-size: 0.95rem; font-family: inherit;
+  }
+  .preview { display: flex; align-items: center; justify-content: center; background: var(--bg); border: 1px dashed var(--border); border-radius: 10px; padding: 14px; min-height: 150px; }
+  .preview img { max-width: 100%; }
+  .snippet { grid-column: 1 / -1; }
+  .snippet .row { display: flex; gap: 8px; align-items: stretch; }
+  .snippet code { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 7px; padding: 10px 12px; font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace; font-size: 0.85rem; overflow-x: auto; white-space: pre; color: var(--text); }
+  .tabs { display: inline-flex; gap: 4px; margin-bottom: 8px; }
+  .tabs button { background: var(--header); border: 1px solid var(--border); color: var(--dim); border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 0.82rem; }
+  .tabs button.active { color: var(--text); border-color: var(--accent); }
+  #copy { cursor: pointer; }
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 16px; margin: 8px 0 20px; }
+  .feature { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .feature h3 { margin: 0 0 6px; font-size: 1rem; }
+  .feature p { margin: 0; color: var(--dim); font-size: 0.9rem; }
+  footer { color: var(--dim); text-align: center; padding: 40px 20px; font-size: 0.88rem; }
+  @media (max-width: 640px) { .builder { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <h1>⚽ World Cup 2026 README Widget</h1>
+      <p>Self-updating FIFA World Cup 2026 panels you can embed anywhere with one line — README, blog, wiki, or dashboard. No API key, no JavaScript. Just an image.</p>
+      <div class="cta">
+        <a class="btn primary" id="builder-link" href="#builder">Build your embed ↓</a>
+        <a class="btn" id="gh-link" href="https://github.com/moose25/world-cup-2026-readme-widget" target="_blank" rel="noopener">★ Star on GitHub</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="showcase">
+      <img id="hero-countdown" alt="World Cup 2026 countdown" />
+      <img id="hero-match" alt="Live match panel" />
+    </div>
+    <div class="showcase">
+      <img id="hero-r32" alt="Round of 32 tracker" />
+    </div>
+
+    <h2 class="section" id="builder">Build your embed</h2>
+    <div class="builder">
+      <div class="controls">
+        <div>
+          <label for="panel">Panel</label>
+          <select id="panel">
+            <option value="countdown">Countdown to kickoff</option>
+            <option value="match">Live / next match</option>
+            <option value="group">Group standings</option>
+            <option value="r32">Round-of-32 tracker</option>
+          </select>
+        </div>
+        <div id="group-row">
+          <label for="group">Group</label>
+          <select id="group"></select>
+        </div>
+        <div id="tz-row">
+          <label for="tz">Your timezone</label>
+          <input id="tz" list="tzlist" placeholder="auto-detected" />
+          <datalist id="tzlist"></datalist>
+        </div>
+        <div>
+          <label for="theme">Theme</label>
+          <select id="theme">
+            <option value="dark">Dark</option>
+            <option value="light">Light</option>
+          </select>
+        </div>
+      </div>
+      <div class="preview"><img id="preview-img" alt="Live preview" /></div>
+      <div class="snippet">
+        <div class="tabs">
+          <button data-fmt="md" class="active">Markdown</button>
+          <button data-fmt="html">HTML</button>
+          <button data-fmt="url">URL</button>
+        </div>
+        <div class="row">
+          <code id="code"></code>
+          <a class="btn" id="copy">Copy</a>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section">What you get</h2>
+    <div class="features">
+      <div class="feature"><h3>🗓 Countdown</h3><p>Days to kickoff, then a day-of-39 counter once it's underway.</p></div>
+      <div class="feature"><h3>⚽ Live match</h3><p>The in-progress game, next kickoff in your timezone, or latest result.</p></div>
+      <div class="feature"><h3>📊 Group standings</h3><p>All 12 groups with the top-two qualification cut drawn in.</p></div>
+      <div class="feature"><h3>🏆 Round-of-32 tracker</h3><p>The new 48-team format: ranks all 12 third-placed teams and shows the 8 that advance.</p></div>
+    </div>
+  </div>
+
+  <footer>
+    Match data from <a href="https://github.com/openfootball/worldcup.json" target="_blank" rel="noopener">openfootball</a> (public domain) ·
+    <a href="https://github.com/moose25/world-cup-2026-readme-widget" target="_blank" rel="noopener">Source on GitHub</a>
+  </footer>
+
+<script>
+  const ORIGIN = location.origin.startsWith("http") ? location.origin : "https://world-cup-2026-readme-widget.vercel.app";
+  const $ = (id) => document.getElementById(id);
+  const GROUPS = "ABCDEFGHIJKL".split("");
+  const COMMON_TZ = [
+    "America/New_York","America/Chicago","America/Denver","America/Los_Angeles",
+    "America/Mexico_City","America/Sao_Paulo","Europe/London","Europe/Madrid",
+    "Europe/Paris","Europe/Berlin","Africa/Lagos","Asia/Tokyo","Asia/Seoul",
+    "Asia/Riyadh","Australia/Sydney","UTC"
+  ];
+
+  // Populate group + timezone controls.
+  $("group").innerHTML = GROUPS.map((g) => `<option value="${g}">Group ${g}</option>`).join("");
+  $("tzlist").innerHTML = COMMON_TZ.map((z) => `<option value="${z}">`).join("");
+  const localTz = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+  $("tz").value = localTz;
+
+  // Hero showcase images.
+  $("hero-countdown").src = `${ORIGIN}/countdown?theme=dark&tz=${encodeURIComponent(localTz)}`;
+  $("hero-match").src = `${ORIGIN}/match?theme=dark&tz=${encodeURIComponent(localTz)}`;
+  $("hero-r32").src = `${ORIGIN}/r32?theme=dark`;
+
+  let fmt = "md";
+
+  function buildUrl() {
+    const panel = $("panel").value;
+    const theme = $("theme").value;
+    const params = new URLSearchParams();
+    if (theme !== "dark") params.set("theme", theme);
+    if (panel === "group") params.set("id", $("group").value);
+    if (panel === "countdown" || panel === "match") {
+      const tz = $("tz").value.trim();
+      if (tz) params.set("tz", tz);
+    }
+    const qs = params.toString();
+    return `${ORIGIN}/${panel}${qs ? "?" + qs : ""}`;
+  }
+
+  function snippet(url) {
+    const alt = "World Cup 2026";
+    if (fmt === "md") return `![${alt}](${url})`;
+    if (fmt === "html") return `<img src="${url}" alt="${alt}">`;
+    return url;
+  }
+
+  function refresh() {
+    const url = buildUrl();
+    $("preview-img").src = url;
+    $("code").textContent = snippet(url);
+    // Toggle which controls are relevant.
+    $("group-row").style.display = $("panel").value === "group" ? "" : "none";
+    $("tz-row").style.display = ["countdown","match"].includes($("panel").value) ? "" : "none";
+  }
+
+  ["panel","group","tz","theme"].forEach((id) => {
+    $(id).addEventListener("input", refresh);
+    $(id).addEventListener("change", refresh);
+  });
+  document.querySelectorAll(".tabs button").forEach((b) => {
+    b.addEventListener("click", () => {
+      document.querySelectorAll(".tabs button").forEach((x) => x.classList.remove("active"));
+      b.classList.add("active");
+      fmt = b.dataset.fmt;
+      refresh();
+    });
+  });
+  $("copy").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText($("code").textContent);
+      $("copy").textContent = "Copied!";
+      setTimeout(() => ($("copy").textContent = "Copy"), 1400);
+    } catch { /* clipboard blocked; user can select manually */ }
+  });
+
+  refresh();
+</script>
+</body>
+</html>

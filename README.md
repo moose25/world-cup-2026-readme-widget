@@ -1,12 +1,15 @@
 # ⚽ World Cup 2026 README Widget
 
-**Self-updating FIFA World Cup 2026 panels you can drop into any GitHub README, website, or wiki — with one line of Markdown.** Live match, group standings, and the only **Round-of-32 qualification tracker** that handles the new 48-team format. No API key, no account, no JavaScript — just `<img>`-able SVG.
+**Self-updating FIFA World Cup 2026 panels you can drop into any GitHub README, website, or wiki — with one line of Markdown.** Countdown, live match, group standings, and the only **Round-of-32 qualification tracker** that handles the new 48-team format. Real country flags, no API key, no account, no JavaScript — just `<img>`-able SVG.
 
 <p align="center">
-  <img src="docs/examples/match-dark.svg" width="460" alt="Live match panel">
+  <img src="docs/examples/match-dark.svg" width="440" alt="Live match panel">
+  <img src="docs/examples/countdown-dark.svg" width="345" alt="Countdown to kickoff">
 </p>
 
 > Built on the free, public-domain [openfootball](https://github.com/openfootball/worldcup.json) dataset. Kickoff times convert to **your** timezone. Light and dark themes included.
+>
+> **▶ [Live demo + embed builder](https://world-cup-2026-readme-widget.vercel.app)** — pick a panel, team, and timezone, then copy the snippet.
 
 ---
 
@@ -15,17 +18,25 @@
 Paste a line, swap in your deployment URL, done. (Deploy your own in ~2 minutes — see [Deploy](#deploy) — or use the demo instance.)
 
 ```markdown
+<!-- Countdown to kickoff, in your timezone -->
+![World Cup countdown](https://world-cup-2026-readme-widget.vercel.app/countdown?tz=America/New_York)
+
 <!-- Live / next match, in your timezone -->
-![World Cup](https://wc26-widget.vercel.app/match?tz=America/New_York)
+![World Cup](https://world-cup-2026-readme-widget.vercel.app/match?tz=America/New_York)
 
 <!-- A group's standings -->
-![Group E](https://wc26-widget.vercel.app/group?id=E)
+![Group E](https://world-cup-2026-readme-widget.vercel.app/group?id=E)
 
 <!-- Round-of-32 qualification tracker -->
-![Round of 32](https://wc26-widget.vercel.app/r32)
+![Round of 32](https://world-cup-2026-readme-widget.vercel.app/r32)
 ```
 
 ## Panels
+
+### `/countdown` — days to kickoff
+Counts down to the opener, then flips to a “day _X_ of 39” counter once the tournament is underway, and a done state after the final.
+
+<img src="docs/examples/countdown-dark.svg" width="345">
 
 ### `/match` — live / next / latest
 Shows the in-progress match, or the next kickoff in your timezone, or the most recent result — whichever is relevant right now.
@@ -48,7 +59,7 @@ The 2026 World Cup is the first with **12 groups**, where the top 2 of each grou
 
 | Param | Panels | Values | Default |
 |-------|--------|--------|---------|
-| `tz`  | `/match` | Any [IANA timezone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (e.g. `Europe/London`, `Asia/Tokyo`) | `UTC` |
+| `tz`  | `/match`, `/countdown` | Any [IANA timezone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (e.g. `Europe/London`, `Asia/Tokyo`) | `UTC` |
 | `theme` | all | `dark`, `light` | `dark` |
 | `id` | `/group` | Group letter `A`–`L` | `A` |
 
@@ -63,7 +74,8 @@ The 2026 World Cup is the first with **12 groups**, where the top 2 of each grou
 
 ```bash
 npm install
-npm run preview     # renders every panel to preview/*.svg + an index.html gallery
+npm run preview      # renders every panel to preview/*.svg + an index.html gallery
+npm run build:flags  # re-bake flag PNGs into lib/flags-data.ts (after editing the team table)
 npm run typecheck
 ```
 
@@ -80,16 +92,22 @@ No environment variables required. (Optional: set `WC26_DATA_URL` to point at a 
 
 ## Roadmap
 
-Shipped in v1: live/next match, group standings, Round-of-32 tracker, timezone + theming.
+Shipped:
+
+- [x] **Countdown** panel — days to kickoff, then day-of-39 once underway
+- [x] **Live / next / latest match** panel, timezone-aware
+- [x] **Group standings** with the top-two qualification cut
+- [x] **Round-of-32 tracker** for the 48-team format
+- [x] **Real country flags** for all 48 teams (base64-inlined, no external loads)
+- [x] Light + dark themes
+- [x] **Live demo + embed builder** landing page
 
 Planned:
 
-- [ ] **Country flags** in chips (currently 3-letter codes) — inline SVG, no external image loads
-- [ ] **Days-until-kickoff** countdown panel (and a "tournament starts in N days" badge)
-- [ ] **Top scorers** / golden boot leaderboard panel
 - [ ] **Track-a-team** panel (`/team?id=USA`) — next match + "what they need to advance"
 - [ ] **All-groups overview** — all 12 tables in one tall image
 - [ ] **Bracket panel** (`/bracket`) — knockout tree that fills in by round (R32 → final)
+- [ ] **Top scorers** / golden boot leaderboard panel
 - [ ] **Tournament stats** — goals, clean sheets, cards, biggest wins
 - [ ] **GitHub Action** delivery — commit the SVG into your own repo on a cron (no dependence on a hosted server)
 - [ ] **True live scores** via an optional keyed API (football-data.org free tier) for in-match minutes

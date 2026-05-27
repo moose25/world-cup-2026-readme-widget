@@ -12,6 +12,7 @@ import { normalize, SOURCE_URL, type RawData } from "../lib/data.js";
 import { renderMatch } from "../lib/panels/match.js";
 import { renderGroup } from "../lib/panels/group.js";
 import { renderR32 } from "../lib/panels/r32.js";
+import { renderCountdown } from "../lib/panels/countdown.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
@@ -70,6 +71,12 @@ async function main(): Promise<void> {
       file: `match-${theme}.svg`,
       svg: renderMatch(matches, { tz: "America/New_York", theme, now: SIM_NOW }),
       must: ["<svg", "</svg>", "WORLD CUP 26"],
+    });
+    panels.push({
+      // Real "now" so the snapshot reflects the actual days to kickoff.
+      file: `countdown-${theme}.svg`,
+      svg: renderCountdown(matches, { tz: "America/New_York", theme }),
+      must: ["COUNTDOWN"],
     });
     panels.push({
       file: `group-a-${theme}.svg`,

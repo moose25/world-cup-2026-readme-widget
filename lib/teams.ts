@@ -23,22 +23,30 @@ interface Entry {
 // Names follow openfootball's spelling. Alternates are listed where the feed
 // has used more than one form across editions.
 const TABLE: Record<string, Entry> = {
+  Algeria: { a2: "dz", a3: "ALG" },
   Argentina: { a2: "ar", a3: "ARG" },
   Australia: { a2: "au", a3: "AUS" },
   Austria: { a2: "at", a3: "AUT" },
   Belgium: { a2: "be", a3: "BEL" },
+  "Bosnia & Herzegovina": { a2: "ba", a3: "BIH" },
+  "Bosnia and Herzegovina": { a2: "ba", a3: "BIH" },
   Brazil: { a2: "br", a3: "BRA" },
   Cameroon: { a2: "cm", a3: "CMR" },
   Canada: { a2: "ca", a3: "CAN" },
+  "Cape Verde": { a2: "cv", a3: "CPV" },
+  "Cabo Verde": { a2: "cv", a3: "CPV" },
   Chile: { a2: "cl", a3: "CHI" },
   Colombia: { a2: "co", a3: "COL" },
   "Costa Rica": { a2: "cr", a3: "CRC" },
   "Côte d'Ivoire": { a2: "ci", a3: "CIV" },
   "Ivory Coast": { a2: "ci", a3: "CIV" },
   Croatia: { a2: "hr", a3: "CRO" },
+  Curaçao: { a2: "cw", a3: "CUW" },
   "Czech Republic": { a2: "cz", a3: "CZE" },
   Czechia: { a2: "cz", a3: "CZE" },
   Denmark: { a2: "dk", a3: "DEN" },
+  "DR Congo": { a2: "cd", a3: "COD" },
+  "Congo DR": { a2: "cd", a3: "COD" },
   Ecuador: { a2: "ec", a3: "ECU" },
   Egypt: { a2: "eg", a3: "EGY" },
   England: { a2: "gb-eng", a3: "ENG" },
@@ -46,8 +54,10 @@ const TABLE: Record<string, Entry> = {
   Germany: { a2: "de", a3: "GER" },
   Ghana: { a2: "gh", a3: "GHA" },
   Greece: { a2: "gr", a3: "GRE" },
+  Haiti: { a2: "ht", a3: "HAI" },
   Iran: { a2: "ir", a3: "IRN" },
   "IR Iran": { a2: "ir", a3: "IRN" },
+  Iraq: { a2: "iq", a3: "IRQ" },
   Italy: { a2: "it", a3: "ITA" },
   Japan: { a2: "jp", a3: "JPN" },
   Jordan: { a2: "jo", a3: "JOR" },
@@ -85,6 +95,11 @@ const TABLE: Record<string, Entry> = {
   Uzbekistan: { a2: "uz", a3: "UZB" },
   Wales: { a2: "gb-wls", a3: "WAL" },
 };
+
+/** Unique flag codes referenced by the table (drives the flag build step). */
+export const FLAG_CODES: string[] = [
+  ...new Set(Object.values(TABLE).map((e) => e.a2)),
+].sort();
 
 /** True for knockout slot tokens like "1A", "W73", "1C/2D". */
 function isPlaceholder(name: string): boolean {

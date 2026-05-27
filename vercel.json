@@ -3,7 +3,8 @@
   "rewrites": [
     { "source": "/match", "destination": "/api/match" },
     { "source": "/group", "destination": "/api/group" },
-    { "source": "/r32", "destination": "/api/r32" }
+    { "source": "/r32", "destination": "/api/r32" },
+    { "source": "/countdown", "destination": "/api/countdown" }
   ],
   "headers": [
     {

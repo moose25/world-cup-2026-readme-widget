@@ -2,7 +2,8 @@
 
 import type { Match } from "../data.js";
 import { getTheme, type Theme } from "../theme.js";
-import { card, chip, text } from "../svg.js";
+import { card, chip, flagImage, text } from "../svg.js";
+import type { Team } from "../teams.js";
 import { formatKickoff, tzAbbrev } from "../time.js";
 
 const LIVE_COLOR = "#f85149";
@@ -83,8 +84,8 @@ export function renderMatch(matches: Match[], opts: MatchOpts): string {
     state === "live" ? LIVE_COLOR : state === "ft" ? theme.dim : theme.accent;
 
   const body: string[] = [];
-  body.push(...teamCluster(m.team1.a3, m.team1.name, 92, theme));
-  body.push(...teamCluster(m.team2.a3, m.team2.name, W - 92, theme));
+  body.push(...teamCluster(m.team1, 92, theme));
+  body.push(...teamCluster(m.team2, W - 92, theme));
 
   // Center: score for live/ft, "vs" otherwise.
   if (state === "upcoming") {
@@ -142,14 +143,18 @@ export function renderMatch(matches: Match[], opts: MatchOpts): string {
   });
 }
 
-/** Code chip with the full team name centered beneath it. */
-function teamCluster(code: string, name: string, cx: number, theme: Theme): string[] {
-  const cw = 58;
+/** Flag (or code chip fallback) with the full team name centered beneath it. */
+function teamCluster(team: Team, cx: number, theme: Theme): string[] {
+  const fw = 48;
+  const fh = 32;
+  const flag = flagImage(cx - fw / 2, 56, fw, fh, team.a2, theme);
+  const mark =
+    flag || chip(cx - 29, 58, team.a3, theme, { w: 58, h: 30 });
   return [
-    chip(cx - cw / 2, 64, code, theme, { w: cw, h: 30 }),
-    text(truncate(name, 16), {
+    mark,
+    text(truncate(team.name, 16), {
       x: cx,
-      y: 116,
+      y: 112,
       size: 13,
       fill: theme.text,
       weight: 600,

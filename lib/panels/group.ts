@@ -2,7 +2,7 @@
 
 import type { Match } from "../data.js";
 import { getTheme, statusColor, type Theme } from "../theme.js";
-import { card, chip, dot, rect, text } from "../svg.js";
+import { card, dot, rect, teamMark, text } from "../svg.js";
 import { computeGroups, type GroupTable, type TeamRow } from "../standings.js";
 
 const W = 470;
@@ -10,7 +10,7 @@ const ROW_H = 34;
 const TOP = 66; // first row baseline area start (below header + column labels)
 
 // Column x-anchors.
-const X = { dot: 20, rank: 34, chip: 50, name: 114, p: 320, gd: 372, pts: 442 };
+const X = { dot: 20, rank: 34, flag: 50, name: 90, p: 320, gd: 372, pts: 442 };
 
 export interface GroupOpts {
   group: string;
@@ -45,7 +45,7 @@ export function renderGroup(matches: Match[], opts: GroupOpts): string {
   // Column labels.
   const label = (t: string, x: number) =>
     text(t, { x, y: 56, size: 10.5, fill: theme.dim, weight: 700, anchor: "middle" });
-  body.push(text("TEAM", { x: X.chip, y: 56, size: 10.5, fill: theme.dim, weight: 700 }));
+  body.push(text("TEAM", { x: X.flag, y: 56, size: 10.5, fill: theme.dim, weight: 700 }));
   body.push(label("P", X.p), label("GD", X.gd), label("PTS", X.pts));
 
   table.rows.forEach((row, i) => body.push(...renderRow(row, i, theme)));
@@ -85,7 +85,7 @@ function renderRow(row: TeamRow, i: number, theme: Theme): string[] {
   out.push(
     text(String(i + 1), { x: X.rank, y: baseline, size: 12, fill: theme.dim, mono: true })
   );
-  out.push(chip(X.chip, yMid - 11, row.team.a3, theme, { w: 46, h: 22 }));
+  out.push(teamMark(X.flag, yMid, row.team, theme, 30, 20));
   out.push(
     text(truncate(row.team.name, 20), {
       x: X.name,

@@ -2,6 +2,7 @@
 // plain string so there's no runtime dependency and output is deterministic.
 
 import type { Theme } from "./theme.js";
+import { FLAGS } from "./flags-data.js";
 
 export const FONT =
   "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif";
@@ -76,6 +77,43 @@ export function chip(
 /** Filled status dot. */
 export function dot(x: number, y: number, r: number, fill: string): string {
   return `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}"/>`;
+}
+
+/**
+ * A rounded flag image (base64, no network) for an alpha-2 code. Returns "" if
+ * the flag isn't bundled, so callers can fall back to a code chip. The clip-path
+ * id is derived from position to stay unique within a single document.
+ */
+export function flagImage(
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  a2: string,
+  theme: Theme
+): string {
+  const data = FLAGS[a2];
+  if (!data) return "";
+  const id = `fl${Math.round(x)}_${Math.round(y)}`;
+  return (
+    `<clipPath id="${id}"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" ry="3"/></clipPath>` +
+    `<image x="${x}" y="${y}" width="${w}" height="${h}" href="${data}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})"/>` +
+    `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" ry="3" fill="none" stroke="${theme.border}" stroke-width="0.75"/>`
+  );
+}
+
+/** Flag if available, else a code chip occupying the same footprint. */
+export function teamMark(
+  x: number,
+  yMid: number,
+  team: { a2: string; a3: string },
+  theme: Theme,
+  w: number,
+  h: number
+): string {
+  const flag = flagImage(x, yMid - h / 2, w, h, team.a2, theme);
+  if (flag) return flag;
+  return chip(x, yMid - h / 2, team.a3, theme, { w: Math.max(w, 34), h });
 }
 
 export interface DocOpts {
