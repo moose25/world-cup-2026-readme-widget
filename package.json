@@ -1,0 +1,29 @@
+{
+  "name": "wc26-widget",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Embeddable, self-updating FIFA World Cup 2026 panels for your GitHub README — live match, group standings, and a Round-of-32 qualification tracker. No API key.",
+  "type": "module",
+  "scripts": {
+    "preview": "tsx scripts/preview.ts",
+    "typecheck": "tsc --noEmit",
+    "dev": "vercel dev"
+  },
+  "keywords": [
+    "world-cup",
+    "world-cup-2026",
+    "soccer",
+    "football",
+    "svg",
+    "readme",
+    "badge",
+    "widget",
+    "github-readme"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@vercel/node": "^5.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}

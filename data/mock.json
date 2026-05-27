@@ -1,0 +1,25 @@
+{
+  "name": "World Cup 2026 (mock fallback)",
+  "matches": [
+    { "round": "Matchday 1", "date": "2026-06-11", "time": "13:00 UTC-6", "team1": "Mexico", "team2": "South Africa", "group": "Group A", "ground": "Mexico City", "score": { "ft": [2, 1] } },
+    { "round": "Matchday 1", "date": "2026-06-11", "time": "20:00 UTC-6", "team1": "South Korea", "team2": "Czech Republic", "group": "Group A", "ground": "Guadalajara", "score": { "ft": [1, 1] } },
+    { "round": "Matchday 2", "date": "2026-06-15", "time": "18:00 UTC-5", "team1": "Mexico", "team2": "South Korea", "group": "Group A", "ground": "Mexico City", "score": { "ft": [1, 0] } },
+    { "round": "Matchday 2", "date": "2026-06-15", "time": "12:00 UTC-4", "team1": "South Africa", "team2": "Czech Republic", "group": "Group A", "ground": "Atlanta", "score": { "ft": [0, 2] } },
+    { "round": "Matchday 3", "date": "2026-06-18", "time": "15:00 UTC-5", "team1": "Mexico", "team2": "Czech Republic", "group": "Group A", "ground": "Monterrey", "score": { "ft": [1, 1] } },
+    { "round": "Matchday 3", "date": "2026-06-18", "time": "15:00 UTC-5", "team1": "South Korea", "team2": "South Africa", "group": "Group A", "ground": "Guadalajara", "score": { "ft": [3, 1] } },
+
+    { "round": "Matchday 1", "date": "2026-06-12", "time": "15:00 UTC-4", "team1": "Spain", "team2": "Croatia", "group": "Group B", "ground": "New York New Jersey", "score": { "ft": [3, 0] } },
+    { "round": "Matchday 1", "date": "2026-06-12", "time": "18:00 UTC-4", "team1": "Morocco", "team2": "Canada", "group": "Group B", "ground": "Toronto", "score": { "ft": [1, 1] } },
+    { "round": "Matchday 2", "date": "2026-06-16", "time": "15:00 UTC-4", "team1": "Spain", "team2": "Morocco", "group": "Group B", "ground": "Boston", "score": { "ft": [2, 1] } },
+    { "round": "Matchday 2", "date": "2026-06-16", "time": "18:00 UTC-4", "team1": "Croatia", "team2": "Canada", "group": "Group B", "ground": "Toronto", "score": { "ft": [2, 0] } },
+    { "round": "Matchday 3", "date": "2026-06-19", "time": "15:00 UTC-4", "team1": "Spain", "team2": "Canada", "group": "Group B", "ground": "Philadelphia", "score": { "ft": [4, 0] } },
+    { "round": "Matchday 3", "date": "2026-06-19", "time": "15:00 UTC-4", "team1": "Croatia", "team2": "Morocco", "group": "Group B", "ground": "Boston", "score": { "ft": [1, 1] } },
+
+    { "round": "Matchday 1", "date": "2026-06-13", "time": "18:00 UTC-7", "team1": "Argentina", "team2": "Norway", "group": "Group C", "ground": "Los Angeles", "score": { "ft": [2, 0] } },
+    { "round": "Matchday 1", "date": "2026-06-13", "time": "15:00 UTC-7", "team1": "Japan", "team2": "Ghana", "group": "Group C", "ground": "Seattle", "score": { "ft": [1, 2] } },
+    { "round": "Matchday 2", "date": "2026-06-17", "time": "18:00 UTC-7", "team1": "Argentina", "team2": "Japan", "group": "Group C", "ground": "San Francisco Bay Area", "score": { "ft": [3, 1] } },
+    { "round": "Matchday 2", "date": "2026-06-17", "time": "15:00 UTC-7", "team1": "Norway", "team2": "Ghana", "group": "Group C", "ground": "Seattle", "score": { "ft": [2, 1] } },
+    { "round": "Matchday 3", "date": "2026-06-20", "time": "15:00 UTC-7", "team1": "Argentina", "team2": "Ghana", "group": "Group C", "ground": "Los Angeles", "score": { "ft": [1, 0] } },
+    { "round": "Matchday 3", "date": "2026-06-20", "time": "15:00 UTC-7", "team1": "Norway", "team2": "Japan", "group": "Group C", "ground": "San Francisco Bay Area", "score": { "ft": [1, 1] } }
+  ]
+}
