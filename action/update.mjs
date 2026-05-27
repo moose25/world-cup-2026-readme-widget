@@ -8,7 +8,7 @@ import { existsSync } from "node:fs";
 const inp = (key, dflt = "") =>
   process.env[`INPUT_${key.toUpperCase().replace(/-/g, "_")}`]?.trim() || dflt;
 
-const base = inp("base-url", "https://world-cup-2026-readme-widget.vercel.app").replace(/\/+$/, "");
+const base = inp("base-url", "https://wc26-widget.vercel.app").replace(/\/+$/, "");
 const tz = inp("tz", "UTC");
 const theme = inp("theme", "dark");
 const outDir = inp("out-dir", ".github/wc26");

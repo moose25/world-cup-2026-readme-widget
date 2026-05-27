@@ -9,7 +9,7 @@
 
 > Built on the free, public-domain [openfootball](https://github.com/openfootball/worldcup.json) dataset. Kickoff times convert to **your** timezone. Light and dark themes included.
 >
-> **▶ [Live demo + embed builder](https://world-cup-2026-readme-widget.vercel.app)** — pick a panel, team, and timezone, then copy the snippet.
+> **▶ [Live demo + embed builder](https://wc26-widget.vercel.app)** — pick a panel, team, and timezone, then copy the snippet.
 
 ---
 
@@ -19,25 +19,25 @@ Paste a line, swap in your deployment URL, done. (Deploy your own in ~2 minutes 
 
 ```markdown
 <!-- Countdown to kickoff, in your timezone -->
-![World Cup countdown](https://world-cup-2026-readme-widget.vercel.app/countdown?tz=America/New_York)
+![World Cup countdown](https://wc26-widget.vercel.app/countdown?tz=America/New_York)
 
 <!-- Live / next match, in your timezone -->
-![World Cup](https://world-cup-2026-readme-widget.vercel.app/match?tz=America/New_York)
+![World Cup](https://wc26-widget.vercel.app/match?tz=America/New_York)
 
 <!-- Track your team -->
-![USA](https://world-cup-2026-readme-widget.vercel.app/team?id=USA&tz=America/New_York)
+![USA](https://wc26-widget.vercel.app/team?id=USA&tz=America/New_York)
 
 <!-- A group's standings -->
-![Group E](https://world-cup-2026-readme-widget.vercel.app/group?id=E)
+![Group E](https://wc26-widget.vercel.app/group?id=E)
 
 <!-- Round-of-32 qualification tracker -->
-![Round of 32](https://world-cup-2026-readme-widget.vercel.app/r32)
+![Round of 32](https://wc26-widget.vercel.app/r32)
 
 <!-- Knockout bracket -->
-![Bracket](https://world-cup-2026-readme-widget.vercel.app/bracket)
+![Bracket](https://wc26-widget.vercel.app/bracket)
 ```
 
-There's also `/groups` (all 12 tables), `/scorers` (golden boot), and `/stats` — build any of them with the **[live embed builder](https://world-cup-2026-readme-widget.vercel.app)**.
+There's also `/groups` (all 12 tables), `/scorers` (golden boot), and `/stats` — build any of them with the **[live embed builder](https://wc26-widget.vercel.app)**.
 
 ## Panels
 

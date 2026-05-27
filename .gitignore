@@ -5,3 +5,5 @@ node_modules/
 
 # generated preview output (kept out of git; regenerate with `npm run preview`)
 preview/
+
+.vercel

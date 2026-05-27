@@ -10,7 +10,7 @@ inputs:
     default: "countdown,match,r32"
   base-url:
     description: "Deployment base URL."
-    default: "https://world-cup-2026-readme-widget.vercel.app"
+    default: "https://wc26-widget.vercel.app"
   tz:
     description: "IANA timezone applied to time-based panels when they don't set their own."
     default: "UTC"
