@@ -3,8 +3,9 @@
 **Self-updating FIFA World Cup 2026 panels you can drop into any GitHub README, website, or wiki — with one line of Markdown.** Countdown, live match, group standings, and the only **Round-of-32 qualification tracker** that handles the new 48-team format. Real country flags, no API key, no account, no JavaScript — just `<img>`-able SVG.
 
 <p align="center">
-  <img src="docs/examples/match-dark.svg" width="440" alt="Live match panel">
-  <img src="docs/examples/countdown-dark.svg" width="345" alt="Countdown to kickoff">
+  <!-- Live panels served from the deployment — these update on their own. -->
+  <img src="https://wc26-widget.vercel.app/match?tz=America/New_York" width="440" alt="Live match panel">
+  <img src="https://wc26-widget.vercel.app/countdown?tz=America/New_York" width="345" alt="Countdown to kickoff">
 </p>
 
 > Built on the free, public-domain [openfootball](https://github.com/openfootball/worldcup.json) dataset. Kickoff times convert to **your** timezone. Light and dark themes included.
