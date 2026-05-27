@@ -64,6 +64,8 @@ function simulateAll(raw: RawData, cutoff: string): RawData {
     const a = goals();
     const b = goals();
     m.score = { ft: [a, b] };
+    // Knockout draws go to penalties (the sim has no extra time).
+    if (!m.group && a === b) m.score.p = rand() < 0.5 ? [4, 3] : [3, 4];
     if (m.group && isReal(m)) {
       const mk = (n: number, name: string): RawMatch["goals1"] => {
         const a3 = lookupTeam(name).a3;

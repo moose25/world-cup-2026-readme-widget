@@ -91,6 +91,24 @@ A connected R32 → Final tree built from the official knockout topology. Slots 
 | `id` | `/group` | Group letter `A`–`L` | `A` |
 | `id` | `/team` | Team code/name (e.g. `USA`, `ESP`, `Brazil`) | `USA` |
 
+## GitHub Action — commit the panels into your repo
+
+Prefer not to depend on the live server at view time? This repo doubles as a GitHub Action that fetches the panels on a schedule and commits them into your repo as SVG files, so they keep updating on their own. Drop the markers in your README and point a workflow at it:
+
+```markdown
+<!-- WC26:START -->
+<!-- WC26:END -->
+```
+
+```yaml
+- uses: moose25/world-cup-2026-readme-widget@main
+  with:
+    panels: "countdown,match,r32,bracket,team?id=USA"
+    tz: "America/New_York"
+```
+
+A full, copy-paste workflow lives in [examples/update-readme.yml](examples/update-readme.yml).
+
 ## How it works
 
 - **Data:** the public-domain [openfootball/worldcup.json](https://github.com/openfootball/worldcup.json) feed — no API key, no rate limits. Results land after each match; a `~5 min` server cache plus HTTP `s-maxage` keeps it fresh without hammering the source.
@@ -118,27 +136,24 @@ vercel            # follow the prompts; your panels are live at <project>.vercel
 
 No environment variables required. (Optional: set `WC26_DATA_URL` to point at a mirror of the dataset.)
 
-## Roadmap
+## Features
 
-Shipped:
+- **Countdown** — days to kickoff, then a day-of-39 counter once underway
+- **Live / next / latest match**, with kickoff in any timezone
+- **Track-a-team** — a team's group, position, status, and next fixture
+- **Group standings** and an **all-groups overview**, with the qualification cut drawn in
+- **Round-of-32 tracker** built for the 48-team format (8 best third-placed teams)
+- **Knockout bracket** — a connected R32 → Final tree that resolves group winners, the third-place allocation, and penalty-shootout results
+- **Top scorers** and **tournament stats** (goals, clean sheets, penalties, biggest win)
+- **Real country flags** for all 48 teams, inlined so embeds need no network
+- **Head-to-head tiebreaker** in the standings sort
+- **Light and dark themes**, a **live demo + embed builder**, and a **GitHub Action** delivery mode
 
-- [x] **Countdown** — days to kickoff, then day-of-39 once underway
-- [x] **Live / next / latest match**, timezone-aware
-- [x] **Track-a-team** (`/team?id=USA`) — position, status, next fixture
-- [x] **Group standings** + **all-groups overview** (`/groups`) with the qualification cut
-- [x] **Round-of-32 tracker** for the 48-team format
-- [x] **Knockout bracket** (`/bracket`) — connected R32 → Final tree
-- [x] **Top scorers** (`/scorers`) and **tournament stats** (`/stats`)
-- [x] **Real country flags** for all 48 teams (base64-inlined, no external loads)
-- [x] Head-to-head tiebreaker in the standings sort
-- [x] Light + dark themes, **live demo + embed builder**
+### Planned features
 
-Planned:
-
-- [ ] **Third-place → R32 assignment matrix** so bracket third-place slots resolve fully
-- [ ] **GitHub Action** delivery — commit the SVG into your own repo on a cron (no dependence on a hosted server)
-- [ ] **True live scores** via an optional keyed API (football-data.org free tier) for in-match minutes
-- [ ] Fair-play / drawing-of-lots tiebreakers (the remaining FIFA criteria)
+- **Live in-match scores and minutes**, via an optional keyed data source (football-data.org)
+- **Per-minute match timeline** (goals, cards) on the match panel
+- **Remaining FIFA tiebreakers** (fair play, drawing of lots) in the standings sort
 
 Contributions and panel ideas welcome — open an issue.
 

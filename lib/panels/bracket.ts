@@ -134,8 +134,8 @@ function box(x: number, y: number, m: KMatch, theme: Theme): string[] {
   const out: string[] = [];
   out.push(rect(x, y, BOX_W, BOX_H, { fill: theme.card, r: 5, stroke: theme.border }));
   out.push(`<path d="M${x} ${y + BOX_H / 2} H${x + BOX_W}" stroke="${theme.border}" stroke-width="0.6" opacity="0.6"/>`);
-  out.push(...slotRow(x, y + BOX_H / 4 + 4, m.s1, m.score1, m.winnerSide === 1, theme));
-  out.push(...slotRow(x, y + (3 * BOX_H) / 4 + 4, m.s2, m.score2, m.winnerSide === 2, theme));
+  out.push(...slotRow(x, y + BOX_H / 4 + 4, m.s1, m.score1, m.winnerSide === 1, m.shootout, theme));
+  out.push(...slotRow(x, y + (3 * BOX_H) / 4 + 4, m.s2, m.score2, m.winnerSide === 2, m.shootout, theme));
   return out;
 }
 
@@ -145,6 +145,7 @@ function slotRow(
   slot: Slot,
   score: number | null,
   isWinner: boolean,
+  shootout: boolean,
   theme: Theme
 ): string[] {
   const out: string[] = [];
@@ -156,6 +157,10 @@ function slotRow(
     out.push(text(slot.team.a3, { x: x + 28, y: baseline, size: 11, fill, weight, mono: true }));
   } else {
     out.push(text(truncate(slot.label, 14), { x: x + 7, y: baseline, size: 9.5, fill: theme.dim }));
+  }
+  // Mark the penalty-shootout winner.
+  if (shootout && isWinner) {
+    out.push(text("p", { x: x + BOX_W - 20, y: baseline, size: 8, fill: theme.accent, weight: 800, anchor: "end" }));
   }
   if (score !== null) {
     out.push(text(String(score), { x: x + BOX_W - 7, y: baseline, size: 11, fill, weight, anchor: "end", mono: true }));

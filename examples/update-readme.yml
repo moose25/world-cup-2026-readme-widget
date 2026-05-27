@@ -1,0 +1,35 @@
+# Example workflow — copy this into YOUR repo at .github/workflows/world-cup.yml
+#
+# It refreshes the committed World Cup panel SVGs on a schedule and commits the
+# changes. Embed the files in your README, or use the <!-- WC26:START/END -->
+# markers (below) to have the <img> tags injected for you.
+#
+#   <!-- WC26:START -->
+#   <!-- WC26:END -->
+
+name: Update World Cup widgets
+
+on:
+  schedule:
+    - cron: "*/30 * * * *" # every 30 minutes
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: moose25/world-cup-2026-readme-widget@main
+        with:
+          panels: "countdown,match,r32,bracket,team?id=USA"
+          tz: "America/New_York"
+          theme: "dark"
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: refresh World Cup 2026 widgets"
+          file_pattern: ".github/wc26/* README.md"

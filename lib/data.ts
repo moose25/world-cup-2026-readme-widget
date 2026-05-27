@@ -31,7 +31,13 @@ export interface RawMatch {
   ground?: string;
   num?: number;
   // openfootball has used both shapes across editions; we accept either.
-  score?: { ft?: [number, number]; ht?: [number, number] };
+  // Knockout ties carry extra-time (et) and penalty (p) scores too.
+  score?: {
+    ft?: [number, number];
+    ht?: [number, number];
+    et?: [number, number];
+    p?: [number, number];
+  };
   score1?: number;
   score2?: number;
   goals1?: RawGoal[];
@@ -68,6 +74,9 @@ export interface Match {
   num: number | null;
   score1: number | null;
   score2: number | null;
+  /** Extra-time and penalty scores, when a knockout tie needed them. */
+  et: [number, number] | null;
+  pens: [number, number] | null;
   finished: boolean;
   goals: Goal[];
 }
@@ -115,6 +124,8 @@ export function normalize(raw: RawData): Match[] {
       num: typeof m.num === "number" ? m.num : null,
       score1: s1,
       score2: s2,
+      et: m.score?.et ?? null,
+      pens: m.score?.p ?? null,
       finished: s1 !== null && s2 !== null,
       goals: readGoals(m),
     };

@@ -1,0 +1,38 @@
+name: "World Cup 2026 README Widget"
+description: "Commit self-updating FIFA World Cup 2026 panels (SVG) into your repo on a schedule."
+branding:
+  icon: "globe"
+  color: "green"
+
+inputs:
+  panels:
+    description: "Comma-separated panels to fetch. Each is a path with optional query, e.g. 'countdown,match,r32,team?id=USA,group?id=E'."
+    default: "countdown,match,r32"
+  base-url:
+    description: "Deployment base URL."
+    default: "https://world-cup-2026-readme-widget.vercel.app"
+  tz:
+    description: "IANA timezone applied to time-based panels when they don't set their own."
+    default: "UTC"
+  theme:
+    description: "dark or light, applied when a panel doesn't set its own."
+    default: "dark"
+  out-dir:
+    description: "Directory the SVG files are written to."
+    default: ".github/wc26"
+  readme:
+    description: "Markdown file to inject <img> tags into, between <!-- WC26:START --> and <!-- WC26:END --> markers (optional)."
+    default: "README.md"
+
+runs:
+  using: "composite"
+  steps:
+    - shell: bash
+      env:
+        INPUT_PANELS: ${{ inputs.panels }}
+        INPUT_BASE_URL: ${{ inputs.base-url }}
+        INPUT_TZ: ${{ inputs.tz }}
+        INPUT_THEME: ${{ inputs.theme }}
+        INPUT_OUT_DIR: ${{ inputs.out-dir }}
+        INPUT_README: ${{ inputs.readme }}
+      run: node "${{ github.action_path }}/action/update.mjs"
