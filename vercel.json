@@ -3,8 +3,13 @@
   "rewrites": [
     { "source": "/match", "destination": "/api/match" },
     { "source": "/group", "destination": "/api/group" },
+    { "source": "/groups", "destination": "/api/groups" },
     { "source": "/r32", "destination": "/api/r32" },
-    { "source": "/countdown", "destination": "/api/countdown" }
+    { "source": "/countdown", "destination": "/api/countdown" },
+    { "source": "/team", "destination": "/api/team" },
+    { "source": "/stats", "destination": "/api/stats" },
+    { "source": "/scorers", "destination": "/api/scorers" },
+    { "source": "/bracket", "destination": "/api/bracket" }
   ],
   "headers": [
     {

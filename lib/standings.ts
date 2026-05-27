@@ -35,6 +35,11 @@ export interface GroupTable {
   rows: TeamRow[]; // best first
 }
 
+/** A group is decided once all four teams have played their three matches. */
+export function groupComplete(table: GroupTable): boolean {
+  return table.rows.length === 4 && table.rows.every((r) => r.played >= 3);
+}
+
 function blankRow(team: Team): TeamRow {
   return {
     team,
@@ -79,6 +84,7 @@ function applyResult(row: TeamRow, gf: number, ga: number): void {
 /** Build all 12 group tables from the match list (handles partial results). */
 export function computeGroups(matches: Match[]): GroupTable[] {
   const byGroup = new Map<string, Map<string, TeamRow>>();
+  const groupMatches = new Map<string, Match[]>();
   const rowFor = (group: string, team: Team): TeamRow => {
     let g = byGroup.get(group);
     if (!g) byGroup.set(group, (g = new Map()));
@@ -90,6 +96,7 @@ export function computeGroups(matches: Match[]): GroupTable[] {
   for (const m of matches) {
     if (!m.group) continue;
     if (m.team1.placeholder || m.team2.placeholder) continue;
+    (groupMatches.get(m.group) ?? groupMatches.set(m.group, []).get(m.group)!).push(m);
     // Register both teams so the table lists all 4 even before kickoff.
     const r1 = rowFor(m.group, m.team1);
     const r2 = rowFor(m.group, m.team2);
@@ -100,14 +107,79 @@ export function computeGroups(matches: Match[]): GroupTable[] {
   }
 
   const tables: GroupTable[] = GROUP_LETTERS.filter((g) => byGroup.has(g)).map(
-    (group) => ({
-      group,
-      rows: [...byGroup.get(group)!.values()].sort(compareRows),
-    })
+    (group) => {
+      const rows = [...byGroup.get(group)!.values()].sort(compareRows);
+      breakTies(rows, groupMatches.get(group) ?? []);
+      return { group, rows };
+    }
   );
 
   assignStatuses(tables);
   return tables;
+}
+
+/** True when two rows are level on the primary criteria (pts, GD, GF). */
+function levelOnPrimary(a: TeamRow, b: TeamRow): boolean {
+  return a.pts === b.pts && a.gd === b.gd && a.gf === b.gf;
+}
+
+/**
+ * Re-order any run of teams level on points/GD/GF using a head-to-head
+ * mini-league (points, then GD, then GF among only those teams). This is the
+ * next FIFA criterion after the overall ones; fair-play and drawing of lots
+ * (the remaining steps) are still a TODO.
+ */
+function breakTies(rows: TeamRow[], matches: Match[]): void {
+  for (let i = 0; i < rows.length; ) {
+    let j = i + 1;
+    while (j < rows.length && levelOnPrimary(rows[i]!, rows[j]!)) j++;
+    if (j - i > 1) {
+      const run = rows.slice(i, j);
+      const names = new Set(run.map((r) => r.team.name));
+      const h2h = miniLeague(names, matches);
+      run.sort((a, b) => {
+        const x = h2h.get(a.team.name)!;
+        const y = h2h.get(b.team.name)!;
+        return (
+          y.pts - x.pts ||
+          y.gd - x.gd ||
+          y.gf - x.gf ||
+          a.team.a3.localeCompare(b.team.a3)
+        );
+      });
+      for (let k = 0; k < run.length; k++) rows[i + k] = run[k]!;
+    }
+    i = j;
+  }
+}
+
+interface Mini {
+  pts: number;
+  gd: number;
+  gf: number;
+}
+
+/** Points/GD/GF earned only in matches between the named teams. */
+function miniLeague(names: Set<string>, matches: Match[]): Map<string, Mini> {
+  const table = new Map<string, Mini>();
+  for (const n of names) table.set(n, { pts: 0, gd: 0, gf: 0 });
+  for (const m of matches) {
+    if (!m.finished || m.score1 === null || m.score2 === null) continue;
+    if (!names.has(m.team1.name) || !names.has(m.team2.name)) continue;
+    const a = table.get(m.team1.name)!;
+    const b = table.get(m.team2.name)!;
+    a.gf += m.score1;
+    a.gd += m.score1 - m.score2;
+    b.gf += m.score2;
+    b.gd += m.score2 - m.score1;
+    if (m.score1 > m.score2) a.pts += 3;
+    else if (m.score1 < m.score2) b.pts += 3;
+    else {
+      a.pts += 1;
+      b.pts += 1;
+    }
+  }
+  return table;
 }
 
 export interface ThirdPlaceEntry {

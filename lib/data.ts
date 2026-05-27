@@ -12,6 +12,14 @@ export const SOURCE_URL =
   process.env.WC26_DATA_URL ??
   "https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json";
 
+/** A single goal as encoded by openfootball. */
+export interface RawGoal {
+  name: string;
+  minute?: number;
+  penalty?: boolean;
+  owngoal?: boolean;
+}
+
 /** Shape of a match as it appears in the upstream feed. */
 export interface RawMatch {
   round: string;
@@ -26,6 +34,17 @@ export interface RawMatch {
   score?: { ft?: [number, number]; ht?: [number, number] };
   score1?: number;
   score2?: number;
+  goals1?: RawGoal[];
+  goals2?: RawGoal[];
+}
+
+/** A normalized goal with the scoring team's side (1 or 2). */
+export interface Goal {
+  name: string;
+  minute: number | null;
+  penalty: boolean;
+  ownGoal: boolean;
+  side: 1 | 2;
 }
 
 export interface RawData {
@@ -45,9 +64,12 @@ export interface Match {
   /** Single-letter group ("A".."L"), or null for knockout fixtures. */
   group: string | null;
   ground: string | null;
+  /** Knockout match number (e.g. 73), used to wire up the bracket. */
+  num: number | null;
   score1: number | null;
   score2: number | null;
   finished: boolean;
+  goals: Goal[];
 }
 
 function readScore(m: RawMatch): [number | null, number | null] {
@@ -66,6 +88,18 @@ function parseGroup(group: string | undefined): string | null {
   return m ? m[1]!.toUpperCase() : null;
 }
 
+function readGoals(m: RawMatch): Goal[] {
+  const map = (list: RawGoal[] | undefined, side: 1 | 2): Goal[] =>
+    (list ?? []).map((g) => ({
+      name: g.name,
+      minute: typeof g.minute === "number" ? g.minute : null,
+      penalty: g.penalty === true,
+      ownGoal: g.owngoal === true,
+      side,
+    }));
+  return [...map(m.goals1, 1), ...map(m.goals2, 2)];
+}
+
 export function normalize(raw: RawData): Match[] {
   return raw.matches.map((m) => {
     const [s1, s2] = readScore(m);
@@ -78,9 +112,11 @@ export function normalize(raw: RawData): Match[] {
       team2: lookupTeam(m.team2),
       group: parseGroup(m.group),
       ground: m.ground ?? null,
+      num: typeof m.num === "number" ? m.num : null,
       score1: s1,
       score2: s2,
       finished: s1 !== null && s2 !== null,
+      goals: readGoals(m),
     };
   });
 }

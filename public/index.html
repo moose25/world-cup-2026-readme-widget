@@ -90,13 +90,23 @@
           <select id="panel">
             <option value="countdown">Countdown to kickoff</option>
             <option value="match">Live / next match</option>
+            <option value="team">Track a team</option>
             <option value="group">Group standings</option>
+            <option value="groups">All groups overview</option>
             <option value="r32">Round-of-32 tracker</option>
+            <option value="bracket">Knockout bracket</option>
+            <option value="scorers">Top scorers</option>
+            <option value="stats">Tournament stats</option>
           </select>
         </div>
         <div id="group-row">
           <label for="group">Group</label>
           <select id="group"></select>
+        </div>
+        <div id="team-row">
+          <label for="teamid">Team</label>
+          <input id="teamid" list="teamlist" placeholder="e.g. USA, ESP, BRA" value="USA" />
+          <datalist id="teamlist"></datalist>
         </div>
         <div id="tz-row">
           <label for="tz">Your timezone</label>
@@ -129,8 +139,12 @@
     <div class="features">
       <div class="feature"><h3>🗓 Countdown</h3><p>Days to kickoff, then a day-of-39 counter once it's underway.</p></div>
       <div class="feature"><h3>⚽ Live match</h3><p>The in-progress game, next kickoff in your timezone, or latest result.</p></div>
-      <div class="feature"><h3>📊 Group standings</h3><p>All 12 groups with the top-two qualification cut drawn in.</p></div>
+      <div class="feature"><h3>⭐ Track a team</h3><p>Your team's group position, status, and next fixture in your timezone.</p></div>
+      <div class="feature"><h3>📊 Group standings</h3><p>Any group, or all 12 at once, with the top-two qualification cut drawn in.</p></div>
       <div class="feature"><h3>🏆 Round-of-32 tracker</h3><p>The new 48-team format: ranks all 12 third-placed teams and shows the 8 that advance.</p></div>
+      <div class="feature"><h3>🗂 Knockout bracket</h3><p>A connected R32 → Final tree that fills in as results land.</p></div>
+      <div class="feature"><h3>👟 Top scorers</h3><p>The golden-boot race, updated as goals go in.</p></div>
+      <div class="feature"><h3>📈 Tournament stats</h3><p>Goals, clean sheets, penalties, biggest win, and more.</p></div>
     </div>
   </div>
 
@@ -150,9 +164,12 @@
     "Asia/Riyadh","Australia/Sydney","UTC"
   ];
 
-  // Populate group + timezone controls.
+  const TEAM_CODES = ["ALG","ARG","AUS","AUT","BEL","BIH","BRA","CAN","CPV","COL","CRO","CUW","CZE","COD","ECU","EGY","ENG","FRA","GER","GHA","HAI","IRN","IRQ","CIV","JPN","JOR","KOR","MEX","MAR","NED","NZL","NGA","NOR","PAN","PAR","POR","QAT","KSA","SCO","SEN","RSA","ESP","SWE","SUI","TUN","TUR","URU","USA","UZB"];
+
+  // Populate group + timezone + team controls.
   $("group").innerHTML = GROUPS.map((g) => `<option value="${g}">Group ${g}</option>`).join("");
   $("tzlist").innerHTML = COMMON_TZ.map((z) => `<option value="${z}">`).join("");
+  $("teamlist").innerHTML = TEAM_CODES.map((c) => `<option value="${c}">`).join("");
   const localTz = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
   $("tz").value = localTz;
 
@@ -163,13 +180,19 @@
 
   let fmt = "md";
 
+  const USES_TZ = ["countdown", "match", "team"];
+
   function buildUrl() {
     const panel = $("panel").value;
     const theme = $("theme").value;
     const params = new URLSearchParams();
     if (theme !== "dark") params.set("theme", theme);
     if (panel === "group") params.set("id", $("group").value);
-    if (panel === "countdown" || panel === "match") {
+    if (panel === "team") {
+      const id = $("teamid").value.trim();
+      if (id) params.set("id", id);
+    }
+    if (USES_TZ.includes(panel)) {
       const tz = $("tz").value.trim();
       if (tz) params.set("tz", tz);
     }
@@ -189,11 +212,13 @@
     $("preview-img").src = url;
     $("code").textContent = snippet(url);
     // Toggle which controls are relevant.
-    $("group-row").style.display = $("panel").value === "group" ? "" : "none";
-    $("tz-row").style.display = ["countdown","match"].includes($("panel").value) ? "" : "none";
+    const panel = $("panel").value;
+    $("group-row").style.display = panel === "group" ? "" : "none";
+    $("team-row").style.display = panel === "team" ? "" : "none";
+    $("tz-row").style.display = USES_TZ.includes(panel) ? "" : "none";
   }
 
-  ["panel","group","tz","theme"].forEach((id) => {
+  ["panel","group","teamid","tz","theme"].forEach((id) => {
     $(id).addEventListener("input", refresh);
     $(id).addEventListener("change", refresh);
   });

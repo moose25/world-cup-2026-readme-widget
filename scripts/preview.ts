@@ -1,25 +1,32 @@
 // Local preview: render every panel to preview/*.svg + an index.html gallery.
 //
-// Pulls the real fixtures from openfootball, simulates results up to a fixed
-// "now" so the standings/Round-of-32 panels look mid-tournament, and falls back
-// to data/mock.json when offline. Also runs sanity assertions on the output.
+// Pulls the real fixtures from openfootball and simulates results so the panels
+// look mid-tournament. Two simulations are used: a mid-group-stage one for most
+// panels, and a fully-played one (incl. synthesized scorers) so the bracket and
+// top-scorers panels render populated. Falls back to data/mock.json offline.
 
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { mkdirSync, writeFileSync, readFileSync } from "node:fs";
 
-import { normalize, SOURCE_URL, type RawData } from "../lib/data.js";
+import { normalize, SOURCE_URL, type RawData, type RawMatch } from "../lib/data.js";
+import { lookupTeam } from "../lib/teams.js";
 import { renderMatch } from "../lib/panels/match.js";
 import { renderGroup } from "../lib/panels/group.js";
 import { renderR32 } from "../lib/panels/r32.js";
 import { renderCountdown } from "../lib/panels/countdown.js";
+import { renderTeam } from "../lib/panels/team.js";
+import { renderGroups } from "../lib/panels/groups.js";
+import { renderStats } from "../lib/panels/stats.js";
+import { renderScorers } from "../lib/panels/scorers.js";
+import { renderBracket } from "../lib/panels/bracket.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
 const outDir = join(root, "preview");
 
-// Mid-group-stage so tables and the third-place race are populated.
-const SIM_NOW = new Date("2026-06-20T19:00:00Z");
+const SIM_NOW = new Date("2026-06-20T19:00:00Z"); // mid group stage
+const clone = (o: RawData): RawData => JSON.parse(JSON.stringify(o));
 
 function mulberry32(seed: number): () => number {
   return () => {
@@ -31,25 +38,53 @@ function mulberry32(seed: number): () => number {
   };
 }
 
-/** Fill in plausible scores for group matches kicked off before SIM_NOW. */
-function simulate(raw: RawData): RawData {
+const isReal = (m: RawMatch): boolean => !/\d|\//.test(m.team1 + m.team2);
+const before = (m: RawMatch, cutoff: string): boolean => m.date < cutoff;
+
+/** Fill group matches kicked off before SIM_NOW (mid-tournament look). */
+function simulateMid(raw: RawData): RawData {
   const rand = mulberry32(20260620);
-  const goals = () => Math.floor(rand() * rand() * 4.2); // skews low, like football
+  const goals = () => Math.floor(rand() * rand() * 4.2);
   for (const m of raw.matches) {
-    const before = m.date < "2026-06-20" || (m.date === "2026-06-20" && (m.time ?? "") < "19:00");
-    if (m.group && before && !m.score && !/\d|\//.test(m.team1 + m.team2)) {
-      m.score = { ft: [goals(), goals()] };
+    const done = m.date < "2026-06-20" || (m.date === "2026-06-20" && (m.time ?? "") < "19:00");
+    if (m.group && done && !m.score && isReal(m)) m.score = { ft: [goals(), goals()] };
+  }
+  return raw;
+}
+
+const POOL = ["Silva","Müller","Tanaka","Hassan","Nkunku","Olsen","Rossi","Mendez","Park","Haaland","Lopez","Yilmaz","Diop","Santos","Ibrahim","Novak","Costa","Kim","Pulisic","Vlahović"];
+const hash = (s: string): number => [...s].reduce((a, c) => (a * 31 + c.charCodeAt(0)) | 0, 7);
+
+/** Fill all matches before `cutoff` and synthesize scorers for group games. */
+function simulateAll(raw: RawData, cutoff: string): RawData {
+  const rand = mulberry32(777);
+  const goals = () => Math.floor(rand() * rand() * 4.4);
+  for (const m of raw.matches) {
+    if (m.score || !before(m, cutoff)) continue;
+    const a = goals();
+    const b = goals();
+    m.score = { ft: [a, b] };
+    if (m.group && isReal(m)) {
+      const mk = (n: number, name: string): RawMatch["goals1"] => {
+        const a3 = lookupTeam(name).a3;
+        return Array.from({ length: n }, (_, k) => ({
+          name: `${POOL[(Math.abs(hash(a3)) + (k % 2)) % POOL.length]} (${a3})`,
+          minute: 8 + ((k * 19) % 80),
+        }));
+      };
+      m.goals1 = mk(a, m.team1);
+      m.goals2 = mk(b, m.team2);
     }
   }
   return raw;
 }
 
-async function loadData(): Promise<{ raw: RawData; source: string }> {
+async function loadRaw(): Promise<{ raw: RawData; source: string }> {
   try {
     const res = await fetch(SOURCE_URL, { headers: { "User-Agent": "wc26-widget" } });
-    if (res.ok) return { raw: simulate((await res.json()) as RawData), source: "live openfootball feed" };
+    if (res.ok) return { raw: (await res.json()) as RawData, source: "live openfootball feed" };
   } catch {
-    /* fall through to mock */
+    /* fall through */
   }
   const mock = JSON.parse(readFileSync(join(root, "data/mock.json"), "utf8")) as RawData;
   return { raw: mock, source: "data/mock.json (offline fallback)" };
@@ -62,37 +97,25 @@ interface Panel {
 }
 
 async function main(): Promise<void> {
-  const { raw, source } = await loadData();
-  const matches = normalize(raw);
+  const { raw, source } = await loadRaw();
+  const mid = normalize(simulateMid(clone(raw)));
+  const full = normalize(simulateAll(clone(raw), "2026-07-13")); // through the QFs
 
   const panels: Panel[] = [];
   for (const theme of ["dark", "light"] as const) {
-    panels.push({
-      file: `match-${theme}.svg`,
-      svg: renderMatch(matches, { tz: "America/New_York", theme, now: SIM_NOW }),
-      must: ["<svg", "</svg>", "WORLD CUP 26"],
-    });
-    panels.push({
-      // Real "now" so the snapshot reflects the actual days to kickoff.
-      file: `countdown-${theme}.svg`,
-      svg: renderCountdown(matches, { tz: "America/New_York", theme }),
-      must: ["COUNTDOWN"],
-    });
-    panels.push({
-      file: `group-a-${theme}.svg`,
-      svg: renderGroup(matches, { group: "A", theme }),
-      must: ["GROUP A", "advance"],
-    });
-    panels.push({
-      file: `group-b-${theme}.svg`,
-      svg: renderGroup(matches, { group: "B", theme }),
-      must: ["GROUP B"],
-    });
-    panels.push({
-      file: `r32-${theme}.svg`,
-      svg: renderR32(matches, { theme }),
-      must: ["ROUND OF 32 CUT"],
-    });
+    const add = (file: string, svg: string, ...must: string[]) =>
+      panels.push({ file: `${file}-${theme}.svg`, svg, must });
+
+    add("match", renderMatch(mid, { tz: "America/New_York", theme, now: SIM_NOW }), "<svg", "WORLD CUP 26");
+    add("countdown", renderCountdown(mid, { tz: "America/New_York", theme }), "COUNTDOWN");
+    add("group-a", renderGroup(mid, { group: "A", theme }), "GROUP A", "advance");
+    add("group-b", renderGroup(mid, { group: "B", theme }), "GROUP B");
+    add("groups", renderGroups(mid, { theme }), "ALL GROUPS");
+    add("r32", renderR32(mid, { theme }), "ROUND OF 32 CUT");
+    add("team", renderTeam(mid, { id: "USA", tz: "America/New_York", theme, now: SIM_NOW }), "WORLD CUP 26");
+    add("stats", renderStats(mid, { theme }), "TOURNAMENT STATS");
+    add("scorers", renderScorers(full, { theme }), "TOP SCORERS");
+    add("bracket", renderBracket(full, { theme }), "BRACKET");
   }
 
   mkdirSync(outDir, { recursive: true });
@@ -111,7 +134,6 @@ async function main(): Promise<void> {
   writeFileSync(join(outDir, "index.html"), gallery(panels), "utf8");
   console.log(`\nData source: ${source}`);
   console.log(`Gallery: ${join(outDir, "index.html")}`);
-
   if (failures) {
     console.error(`\n${failures} panel(s) failed assertions.`);
     process.exit(1);

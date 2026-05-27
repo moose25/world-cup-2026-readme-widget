@@ -24,12 +24,20 @@ Paste a line, swap in your deployment URL, done. (Deploy your own in ~2 minutes 
 <!-- Live / next match, in your timezone -->
 ![World Cup](https://world-cup-2026-readme-widget.vercel.app/match?tz=America/New_York)
 
+<!-- Track your team -->
+![USA](https://world-cup-2026-readme-widget.vercel.app/team?id=USA&tz=America/New_York)
+
 <!-- A group's standings -->
 ![Group E](https://world-cup-2026-readme-widget.vercel.app/group?id=E)
 
 <!-- Round-of-32 qualification tracker -->
 ![Round of 32](https://world-cup-2026-readme-widget.vercel.app/r32)
+
+<!-- Knockout bracket -->
+![Bracket](https://world-cup-2026-readme-widget.vercel.app/bracket)
 ```
+
+There's also `/groups` (all 12 tables), `/scorers` (golden boot), and `/stats` — build any of them with the **[live embed builder](https://world-cup-2026-readme-widget.vercel.app)**.
 
 ## Panels
 
@@ -53,15 +61,35 @@ The 2026 World Cup is the first with **12 groups**, where the top 2 of each grou
 
 <img src="docs/examples/r32-dark.svg" width="440">
 
-> _Gallery images use simulated mid-tournament results so you can see the panels populated. Live panels show fixtures until matches are played, then fill in automatically._
+### `/team?id=USA` — track a team
+Your team's group, position, qualification status, and next fixture (or latest result) in your timezone. Accepts a 3-letter code (`USA`), alpha-2 (`us`), or full name.
+
+<img src="docs/examples/team-dark.svg" width="440">
+
+### `/bracket` — knockout bracket
+A connected R32 → Final tree built from the official knockout topology. Slots fill in as the group stage finishes and knockout results land.
+
+<img src="docs/examples/bracket-dark.svg" width="640">
+
+### `/groups` — all 12 groups at once
+
+<img src="docs/examples/groups-dark.svg" width="640">
+
+### `/scorers` & `/stats` — golden boot and tournament totals
+
+<img src="docs/examples/scorers-dark.svg" width="410">
+<img src="docs/examples/stats-dark.svg" width="440">
+
+> _Gallery images use simulated results so you can see the panels populated. Live panels show fixtures/placeholders until matches are played, then fill in automatically._
 
 ## Parameters
 
 | Param | Panels | Values | Default |
 |-------|--------|--------|---------|
-| `tz`  | `/match`, `/countdown` | Any [IANA timezone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (e.g. `Europe/London`, `Asia/Tokyo`) | `UTC` |
+| `tz`  | `/match`, `/countdown`, `/team` | Any [IANA timezone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (e.g. `Europe/London`, `Asia/Tokyo`) | `UTC` |
 | `theme` | all | `dark`, `light` | `dark` |
 | `id` | `/group` | Group letter `A`–`L` | `A` |
+| `id` | `/team` | Team code/name (e.g. `USA`, `ESP`, `Brazil`) | `USA` |
 
 ## How it works
 
@@ -94,24 +122,23 @@ No environment variables required. (Optional: set `WC26_DATA_URL` to point at a 
 
 Shipped:
 
-- [x] **Countdown** panel — days to kickoff, then day-of-39 once underway
-- [x] **Live / next / latest match** panel, timezone-aware
-- [x] **Group standings** with the top-two qualification cut
+- [x] **Countdown** — days to kickoff, then day-of-39 once underway
+- [x] **Live / next / latest match**, timezone-aware
+- [x] **Track-a-team** (`/team?id=USA`) — position, status, next fixture
+- [x] **Group standings** + **all-groups overview** (`/groups`) with the qualification cut
 - [x] **Round-of-32 tracker** for the 48-team format
+- [x] **Knockout bracket** (`/bracket`) — connected R32 → Final tree
+- [x] **Top scorers** (`/scorers`) and **tournament stats** (`/stats`)
 - [x] **Real country flags** for all 48 teams (base64-inlined, no external loads)
-- [x] Light + dark themes
-- [x] **Live demo + embed builder** landing page
+- [x] Head-to-head tiebreaker in the standings sort
+- [x] Light + dark themes, **live demo + embed builder**
 
 Planned:
 
-- [ ] **Track-a-team** panel (`/team?id=USA`) — next match + "what they need to advance"
-- [ ] **All-groups overview** — all 12 tables in one tall image
-- [ ] **Bracket panel** (`/bracket`) — knockout tree that fills in by round (R32 → final)
-- [ ] **Top scorers** / golden boot leaderboard panel
-- [ ] **Tournament stats** — goals, clean sheets, cards, biggest wins
+- [ ] **Third-place → R32 assignment matrix** so bracket third-place slots resolve fully
 - [ ] **GitHub Action** delivery — commit the SVG into your own repo on a cron (no dependence on a hosted server)
 - [ ] **True live scores** via an optional keyed API (football-data.org free tier) for in-match minutes
-- [ ] Head-to-head / fair-play tiebreakers in the standings sort
+- [ ] Fair-play / drawing-of-lots tiebreakers (the remaining FIFA criteria)
 
 Contributions and panel ideas welcome — open an issue.
 
