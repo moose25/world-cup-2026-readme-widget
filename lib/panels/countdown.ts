@@ -49,9 +49,14 @@ export function renderCountdown(matches: Match[], opts: CountdownOpts): string {
   let sub: string;
 
   if (t < first) {
-    const days = Math.ceil((first - t) / DAY);
-    big = String(days);
-    label = days === 1 ? "DAY TO KICKOFF" : "DAYS TO KICKOFF";
+    const days = calendarDaysUntil(now, opener.instant!, opts.tz);
+    if (days <= 0) {
+      big = "Today";
+      label = "KICKOFF DAY";
+    } else {
+      big = String(days);
+      label = days === 1 ? "DAY TO KICKOFF" : "DAYS TO KICKOFF";
+    }
     sub = `${shortDate(opener.instant!, opts.tz)} · ${opener.team1.name} v ${opener.team2.name}`;
   } else if (t <= final) {
     const dayIndex = Math.floor((t - first) / DAY) + 1;
@@ -69,11 +74,11 @@ export function renderCountdown(matches: Match[], opts: CountdownOpts): string {
     text(big, {
       x: W / 2,
       y: 86,
-      size: 54,
+      size: big.length > 3 ? 34 : 54,
       fill: theme.accent,
       weight: 800,
       anchor: "middle",
-      mono: true,
+      mono: /^\d+$/.test(big),
     }),
     text(label, {
       x: W / 2,
@@ -101,6 +106,20 @@ function shortDate(instant: Date, tz: string): string {
     day: "numeric",
     month: "short",
   }).format(instant);
+}
+
+/** Whole calendar days from `now` to `target`, counted in the given timezone. */
+function calendarDaysUntil(now: Date, target: Date, tz: string): number {
+  const ymd = (d: Date) =>
+    new Intl.DateTimeFormat("en-CA", {
+      timeZone: tz,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(d);
+  const toUTC = (s: string) =>
+    Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10));
+  return Math.round((toUTC(ymd(target)) - toUTC(ymd(now))) / 86_400_000);
 }
 
 function truncate(s: string, max: number): string {
