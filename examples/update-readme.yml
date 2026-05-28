@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: moose25/world-cup-2026-readme-widget@main
+      - uses: moose25/world-cup-2026-readme-widget@v1.0.0
         with:
           panels: "countdown,match,r32,bracket,team?id=USA"
           tz: "America/New_York"

@@ -110,7 +110,7 @@ Prefer not to depend on the live server at view time? This repo doubles as a Git
 ```
 
 ```yaml
-- uses: moose25/world-cup-2026-readme-widget@main
+- uses: moose25/world-cup-2026-readme-widget@v1.0.0
   with:
     panels: "countdown,match,r32,bracket,team?id=USA"
     tz: "America/New_York"
