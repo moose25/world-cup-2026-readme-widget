@@ -9,18 +9,7 @@
     { "source": "/team", "destination": "/api/team" },
     { "source": "/stats", "destination": "/api/stats" },
     { "source": "/scorers", "destination": "/api/scorers" },
-    { "source": "/bracket", "destination": "/api/bracket" }
-  ],
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        { "key": "Content-Type", "value": "image/svg+xml; charset=utf-8" },
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, s-maxage=300, stale-while-revalidate=600"
-        }
-      ]
-    }
+    { "source": "/bracket", "destination": "/api/bracket" },
+    { "source": "/teams", "destination": "/api/teams" }
   ]
 }

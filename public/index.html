@@ -105,13 +105,11 @@
         </div>
         <div id="team-row">
           <label for="teamid">Team</label>
-          <input id="teamid" list="teamlist" placeholder="e.g. USA, ESP, BRA" value="USA" />
-          <datalist id="teamlist"></datalist>
+          <select id="teamid"></select>
         </div>
         <div id="tz-row">
           <label for="tz">Your timezone</label>
-          <input id="tz" list="tzlist" placeholder="auto-detected" />
-          <datalist id="tzlist"></datalist>
+          <select id="tz"></select>
         </div>
         <div>
           <label for="theme">Theme</label>
@@ -164,14 +162,36 @@
     "Asia/Riyadh","Australia/Sydney","UTC"
   ];
 
-  const TEAM_CODES = ["ALG","ARG","AUS","AUT","BEL","BIH","BRA","CAN","CPV","COL","CRO","CUW","CZE","COD","ECU","EGY","ENG","FRA","GER","GHA","HAI","IRN","IRQ","CIV","JPN","JOR","KOR","MEX","MAR","NED","NZL","NGA","NOR","PAN","PAR","POR","QAT","KSA","SCO","SEN","RSA","ESP","SWE","SUI","TUN","TUR","URU","USA","UZB"];
+  // Static fallback, used only if the live /teams fetch fails (no Nigeria —
+  // they didn't qualify; the live list is authoritative).
+  const TEAM_FALLBACK = ["ALG","ARG","AUS","AUT","BEL","BIH","BRA","CAN","CPV","COL","CRO","CUW","CZE","COD","ECU","EGY","ENG","FRA","GER","GHA","HAI","IRN","IRQ","CIV","JPN","JOR","KOR","MEX","MAR","NED","NZL","NOR","PAN","PAR","POR","QAT","KSA","SCO","SEN","RSA","ESP","SWE","SUI","TUN","TUR","URU","USA","UZB"];
 
-  // Populate group + timezone + team controls.
   $("group").innerHTML = GROUPS.map((g) => `<option value="${g}">Group ${g}</option>`).join("");
-  $("tzlist").innerHTML = COMMON_TZ.map((z) => `<option value="${z}">`).join("");
-  $("teamlist").innerHTML = TEAM_CODES.map((c) => `<option value="${c}">`).join("");
+
+  // Timezone is a real dropdown: common zones plus the visitor's detected zone.
   const localTz = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+  const tzList = COMMON_TZ.includes(localTz) ? COMMON_TZ : [localTz, ...COMMON_TZ];
+  $("tz").innerHTML = tzList.map((z) => `<option value="${z}">${z}</option>`).join("");
   $("tz").value = localTz;
+
+  // Team dropdown, fetched from the live field so it's always complete/correct.
+  function setTeams(list) {
+    $("teamid").innerHTML = list
+      .map((t) => `<option value="${t.code}">${t.name}</option>`)
+      .join("");
+    if (list.some((t) => t.code === "USA")) $("teamid").value = "USA";
+  }
+  fetch(`${ORIGIN}/teams`)
+    .then((r) => r.json())
+    .then((d) => {
+      if (!d.teams || !d.teams.length) throw new Error("empty");
+      setTeams(d.teams);
+      refresh();
+    })
+    .catch(() => {
+      setTeams(TEAM_FALLBACK.map((c) => ({ code: c, name: c })));
+      refresh();
+    });
 
   // Hero showcase images.
   $("hero-countdown").src = `${ORIGIN}/countdown?theme=dark&tz=${encodeURIComponent(localTz)}`;
