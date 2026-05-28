@@ -17,7 +17,7 @@
   body {
     margin: 0; background: var(--bg); color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    line-height: 1.5;
+    line-height: 1.5; overflow-x: hidden;
   }
   a { color: var(--accent); }
   .wrap { max-width: 920px; margin: 0 auto; padding: 0 20px; }
@@ -32,7 +32,7 @@
   }
   .btn.primary { background: var(--accent2); border-color: var(--accent2); color: #04260f; }
   .showcase { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; padding: 12px 0 8px; }
-  .showcase img { max-width: 100%; filter: drop-shadow(0 4px 14px rgba(0,0,0,.4)); }
+  .showcase img { max-width: 100%; height: auto; min-width: 0; filter: drop-shadow(0 4px 14px rgba(0,0,0,.4)); }
   h2.section { font-size: 1.3rem; margin: 44px 0 14px; }
   .builder {
     background: var(--card); border: 1px solid var(--border); border-radius: 12px;
@@ -45,10 +45,10 @@
     background: var(--bg); color: var(--text); font-size: 0.95rem; font-family: inherit;
   }
   .preview { display: flex; align-items: center; justify-content: center; background: var(--bg); border: 1px dashed var(--border); border-radius: 10px; padding: 14px; min-height: 150px; }
-  .preview img { max-width: 100%; }
+  .preview img { max-width: 100%; max-height: 300px; }
   .snippet { grid-column: 1 / -1; }
   .snippet .row { display: flex; gap: 8px; align-items: stretch; }
-  .snippet code { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 7px; padding: 10px 12px; font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace; font-size: 0.85rem; overflow-x: auto; white-space: pre; color: var(--text); }
+  .snippet code { flex: 1; min-width: 0; background: var(--bg); border: 1px solid var(--border); border-radius: 7px; padding: 10px 12px; font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace; font-size: 0.85rem; overflow-x: auto; white-space: pre; color: var(--text); }
   .tabs { display: inline-flex; gap: 4px; margin-bottom: 8px; }
   .tabs button { background: var(--header); border: 1px solid var(--border); color: var(--dim); border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 0.82rem; }
   .tabs button.active { color: var(--text); border-color: var(--accent); }
@@ -58,7 +58,13 @@
   .feature h3 { margin: 0 0 6px; font-size: 1rem; }
   .feature p { margin: 0; color: var(--dim); font-size: 0.9rem; }
   footer { color: var(--dim); text-align: center; padding: 40px 20px; font-size: 0.88rem; }
-  @media (max-width: 640px) { .builder { grid-template-columns: 1fr; } }
+  @media (max-width: 700px) {
+    .builder { grid-template-columns: 1fr; padding: 14px; gap: 12px; }
+    .controls { gap: 10px; }
+    .preview { min-height: 110px; padding: 10px; }
+    .preview img { max-height: 220px; }
+    .snippet code { font-size: 0.78rem; }
+  }
 </style>
 </head>
 <body>
