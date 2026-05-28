@@ -10,6 +10,7 @@
     { "source": "/stats", "destination": "/api/stats" },
     { "source": "/scorers", "destination": "/api/scorers" },
     { "source": "/bracket", "destination": "/api/bracket" },
+    { "source": "/today", "destination": "/api/today" },
     { "source": "/teams", "destination": "/api/teams" }
   ]
 }

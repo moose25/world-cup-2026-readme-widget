@@ -25,6 +25,9 @@ Paste a line, swap in your deployment URL, done. (Deploy your own in ~2 minutes 
 <!-- Live / next match, in your timezone -->
 ![World Cup](https://wc26-widget.vercel.app/match?tz=America/New_York)
 
+<!-- Today's fixtures, in your timezone -->
+![Today](https://wc26-widget.vercel.app/today?tz=America/New_York)
+
 <!-- Track your team -->
 ![USA](https://wc26-widget.vercel.app/team?id=USA&tz=America/New_York)
 
@@ -51,6 +54,11 @@ Counts down to the opener, then flips to a “day _X_ of 39” counter once the 
 Shows the in-progress match, or the next kickoff in your timezone, or the most recent result — whichever is relevant right now.
 
 <img src="docs/examples/match-dark.svg" width="440">
+
+### `/today` — today's fixtures
+Every match on the current calendar day in your timezone, with kickoff times (or scores once games are under way).
+
+<img src="docs/examples/today-dark.svg" width="460">
 
 ### `/group?id=A…L` — standings with the qualification cut
 Full table (P · GD · Pts) with color-coded status and a dashed line marking the top-two cut.
@@ -87,7 +95,7 @@ A connected R32 → Final tree built from the official knockout topology. Slots 
 
 | Param | Panels | Values | Default |
 |-------|--------|--------|---------|
-| `tz`  | `/match`, `/countdown`, `/team` | Any [IANA timezone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (e.g. `Europe/London`, `Asia/Tokyo`) | `UTC` |
+| `tz`  | `/match`, `/countdown`, `/team`, `/today` | Any [IANA timezone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (e.g. `Europe/London`, `Asia/Tokyo`) | `UTC` |
 | `theme` | all | `dark`, `light` | `dark` |
 | `id` | `/group` | Group letter `A`–`L` | `A` |
 | `id` | `/team` | Team code/name (e.g. `USA`, `ESP`, `Brazil`) | `USA` |
@@ -141,6 +149,7 @@ No environment variables required. (Optional: set `WC26_DATA_URL` to point at a 
 
 - **Countdown** — days to kickoff, then a day-of-39 counter once underway
 - **Live / next / latest match**, with kickoff in any timezone
+- **Today's fixtures** — every match on the current day, in your timezone
 - **Track-a-team** — a team's group, position, status, and next fixture
 - **Group standings** and an **all-groups overview**, with the qualification cut drawn in
 - **Round-of-32 tracker** built for the 48-team format (8 best third-placed teams)
@@ -152,9 +161,12 @@ No environment variables required. (Optional: set `WC26_DATA_URL` to point at a 
 
 ### Planned features
 
-- **Live in-match scores and minutes**, via an optional keyed data source (football-data.org)
 - **Per-minute match timeline** (goals, cards) on the match panel
 - **Remaining FIFA tiebreakers** (fair play, drawing of lots) in the standings sort
+
+### Considered but not planned
+
+- **Live in-match scores / minutes.** Tempting, but GitHub serves README images through a cache (camo), so an embed can't update in real time no matter the backend — it refreshes every few minutes at most, which the current post-match data already achieves. True live would also require a keyed third-party API (extra setup, rate limits) for value that mostly lands *outside* READMEs (landing page, Discord). Not worth the trade-off for what this tool is for.
 
 Contributions and panel ideas welcome — open an issue.
 

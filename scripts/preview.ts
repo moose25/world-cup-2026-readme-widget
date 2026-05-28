@@ -15,6 +15,7 @@ import { renderMatch } from "../lib/panels/match.js";
 import { renderGroup } from "../lib/panels/group.js";
 import { renderR32 } from "../lib/panels/r32.js";
 import { renderCountdown } from "../lib/panels/countdown.js";
+import { renderToday } from "../lib/panels/today.js";
 import { renderTeam } from "../lib/panels/team.js";
 import { renderGroups } from "../lib/panels/groups.js";
 import { renderStats } from "../lib/panels/stats.js";
@@ -110,6 +111,7 @@ async function main(): Promise<void> {
 
     add("match", renderMatch(mid, { tz: "America/New_York", theme, now: SIM_NOW }), "<svg", "WORLD CUP 26");
     add("countdown", renderCountdown(mid, { tz: "America/New_York", theme }), "COUNTDOWN");
+    add("today", renderToday(mid, { tz: "America/New_York", theme, now: SIM_NOW }), "TODAY");
     add("group-a", renderGroup(mid, { group: "A", theme }), "GROUP A", "advance");
     add("group-b", renderGroup(mid, { group: "B", theme }), "GROUP B");
     add("groups", renderGroups(mid, { theme }), "ALL GROUPS");
