@@ -15,10 +15,11 @@ const X = { dot: 20, rank: 34, flag: 50, name: 90, p: 320, gd: 372, pts: 442 };
 export interface GroupOpts {
   group: string;
   theme: string | undefined;
+  bg?: string;
 }
 
 export function renderGroup(matches: Match[], opts: GroupOpts): string {
-  const theme = getTheme(opts.theme);
+  const theme = getTheme(opts.theme, opts.bg);
   const letter = (opts.group || "A").toUpperCase();
   const table = computeGroups(matches).find((t) => t.group === letter);
 

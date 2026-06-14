@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getMatches } from "../lib/data.js";
 import { renderGroup } from "../lib/panels/group.js";
-import { q, sendSvg, sendError } from "../lib/respond.js";
+import { q, resolveBg, sendSvg, sendError } from "../lib/respond.js";
 
 export default async function handler(
   req: VercelRequest,
@@ -13,10 +13,10 @@ export default async function handler(
       res,
       renderGroup(matches, {
         group: q(req, "id") ?? q(req, "group") ?? "A",
-        theme: q(req, "theme"),
+        theme: q(req, "theme"), bg: resolveBg(req),
       })
     );
   } catch (err) {
-    sendError(res, err, q(req, "theme"));
+    sendError(res, err, q(req, "theme"), resolveBg(req));
   }
 }

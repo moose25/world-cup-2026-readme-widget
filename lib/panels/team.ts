@@ -14,6 +14,7 @@ export interface TeamOpts {
   id: string;
   tz: string;
   theme: string | undefined;
+  bg?: string;
   now?: Date;
 }
 
@@ -45,7 +46,7 @@ function ordinal(n: number): string {
 const LIVE_MS = 2 * 60 * 60 * 1000;
 
 export function renderTeam(matches: Match[], opts: TeamOpts): string {
-  const theme = getTheme(opts.theme);
+  const theme = getTheme(opts.theme, opts.bg);
   const now = opts.now ?? new Date();
   const found = findTeam(matches, opts.id);
 

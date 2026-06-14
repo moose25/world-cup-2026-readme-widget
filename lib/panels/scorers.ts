@@ -14,10 +14,11 @@ const X = { rank: 22, flag: 40, name: 76, pens: W - 70, goals: W - 18 };
 
 export interface ScorersOpts {
   theme: string | undefined;
+  bg?: string;
 }
 
 export function renderScorers(matches: Match[], opts: ScorersOpts): string {
-  const theme = getTheme(opts.theme);
+  const theme = getTheme(opts.theme, opts.bg);
   const scorers = topScorers(matches, LIMIT);
 
   if (scorers.length === 0) {

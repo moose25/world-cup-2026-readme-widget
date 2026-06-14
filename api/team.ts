@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getMatches } from "../lib/data.js";
 import { renderTeam } from "../lib/panels/team.js";
 import { safeTimeZone } from "../lib/time.js";
-import { q, sendSvg, sendError } from "../lib/respond.js";
+import { q, resolveBg, sendSvg, sendError } from "../lib/respond.js";
 
 export default async function handler(
   req: VercelRequest,
@@ -15,10 +15,10 @@ export default async function handler(
       renderTeam(matches, {
         id: q(req, "id") ?? q(req, "team") ?? "USA",
         tz: safeTimeZone(q(req, "tz")),
-        theme: q(req, "theme"),
+        theme: q(req, "theme"), bg: resolveBg(req),
       })
     );
   } catch (err) {
-    sendError(res, err, q(req, "theme"));
+    sendError(res, err, q(req, "theme"), resolveBg(req));
   }
 }
