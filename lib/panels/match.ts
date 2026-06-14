@@ -50,6 +50,7 @@ function context(m: Match): string {
 export interface MatchOpts {
   tz: string;
   theme: string | undefined;
+  bg?: string;
   now?: Date;
 }
 
@@ -57,7 +58,7 @@ const W = 460;
 const H = 160;
 
 export function renderMatch(matches: Match[], opts: MatchOpts): string {
-  const theme = getTheme(opts.theme);
+  const theme = getTheme(opts.theme, opts.bg);
   const now = opts.now ?? new Date();
   const picked = pickMatch(matches, now);
 

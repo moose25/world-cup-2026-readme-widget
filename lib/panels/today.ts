@@ -15,6 +15,7 @@ const LIVE_COLOR = "#f85149";
 export interface TodayOpts {
   tz: string;
   theme: string | undefined;
+  bg?: string;
   now?: Date;
 }
 
@@ -45,7 +46,7 @@ const ROUND_SHORT: Record<string, string> = {
 };
 
 export function renderToday(matches: Match[], opts: TodayOpts): string {
-  const theme = getTheme(opts.theme);
+  const theme = getTheme(opts.theme, opts.bg);
   const now = opts.now ?? new Date();
   const withInstant = matches
     .filter((m) => m.instant)

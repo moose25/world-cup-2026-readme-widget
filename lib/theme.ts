@@ -48,8 +48,18 @@ const LIGHT: Theme = {
 
 export type ThemeName = "dark" | "light";
 
-export function getTheme(name: string | undefined): Theme {
-  return name === "light" ? LIGHT : DARK;
+/**
+ * Resolve a palette. `bg` optionally overrides the panel background so the
+ * widget can blend into a host page: pass "transparent" to drop the background
+ * entirely (e.g. embedding dark panels in a dark dashboard, where the SVG's
+ * rounded corners would otherwise show the host page's white), or a hex color
+ * (e.g. "#1c1c1c") to match the host exactly.
+ */
+export function getTheme(name: string | undefined, bg?: string): Theme {
+  const base = name === "light" ? LIGHT : DARK;
+  if (!bg) return base;
+  const fill = bg === "transparent" || bg === "none" ? "transparent" : bg;
+  return { ...base, bg: fill, card: fill, headerBg: fill };
 }
 
 export function statusColor(

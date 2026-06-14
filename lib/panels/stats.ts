@@ -15,10 +15,11 @@ const TILE_W = (W - 2 * PAD - (COLS - 1) * GAP) / COLS;
 
 export interface StatsOpts {
   theme: string | undefined;
+  bg?: string;
 }
 
 export function renderStats(matches: Match[], opts: StatsOpts): string {
-  const theme = getTheme(opts.theme);
+  const theme = getTheme(opts.theme, opts.bg);
   const s = computeStats(matches);
 
   const tiles: Array<[string, string]> = [

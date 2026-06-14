@@ -27,10 +27,11 @@ const W = PAD * 2 + COLS * BOX_W + (COLS - 1) * H_GAP;
 
 export interface BracketOpts {
   theme: string | undefined;
+  bg?: string;
 }
 
 export function renderBracket(matches: Match[], opts: BracketOpts): string {
-  const theme = getTheme(opts.theme);
+  const theme = getTheme(opts.theme, opts.bg);
   const ko = resolveKnockout(matches);
 
   if (!ko.final) {

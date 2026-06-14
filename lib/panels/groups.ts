@@ -17,10 +17,11 @@ const COL_W = (W - 2 * PAD - (COLS - 1) * GAP) / COLS;
 
 export interface GroupsOpts {
   theme: string | undefined;
+  bg?: string;
 }
 
 export function renderGroups(matches: Match[], opts: GroupsOpts): string {
-  const theme = getTheme(opts.theme);
+  const theme = getTheme(opts.theme, opts.bg);
   const tables = computeGroups(matches);
   const rows = Math.ceil(tables.length / COLS);
   const height = TOP + rows * BLOCK + 24;

@@ -13,11 +13,12 @@ const DAY = 86_400_000;
 export interface CountdownOpts {
   tz: string;
   theme: string | undefined;
+  bg?: string;
   now?: Date;
 }
 
 export function renderCountdown(matches: Match[], opts: CountdownOpts): string {
-  const theme = getTheme(opts.theme);
+  const theme = getTheme(opts.theme, opts.bg);
   const now = opts.now ?? new Date();
   const sorted = matches
     .filter((m) => m.instant)

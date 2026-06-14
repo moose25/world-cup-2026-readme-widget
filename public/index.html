@@ -128,6 +128,13 @@
             <option value="light">Light</option>
           </select>
         </div>
+        <div>
+          <label for="bg">Background</label>
+          <select id="bg">
+            <option value="">Solid (theme)</option>
+            <option value="transparent">Transparent</option>
+          </select>
+        </div>
       </div>
       <div class="preview"><img id="preview-img" alt="Live preview" /></div>
       <div class="snippet">
@@ -216,8 +223,10 @@
   function buildUrl() {
     const panel = $("panel").value;
     const theme = $("theme").value;
+    const bg = $("bg").value;
     const params = new URLSearchParams();
     if (theme !== "dark") params.set("theme", theme);
+    if (bg) params.set("bg", bg);
     if (panel === "group") params.set("id", $("group").value);
     if (panel === "team") {
       const id = $("teamid").value.trim();
@@ -249,7 +258,7 @@
     $("tz-row").style.display = USES_TZ.includes(panel) ? "" : "none";
   }
 
-  ["panel","group","teamid","tz","theme"].forEach((id) => {
+  ["panel","group","teamid","tz","theme","bg"].forEach((id) => {
     $(id).addEventListener("input", refresh);
     $(id).addEventListener("change", refresh);
   });

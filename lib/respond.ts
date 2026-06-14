@@ -10,6 +10,23 @@ export function q(req: VercelRequest, key: string): string | undefined {
   return Array.isArray(v) ? v[0] : v;
 }
 
+/**
+ * Resolve the background override from `?transparent=1` or `?bg=...`.
+ * Returns "transparent", a "#rrggbb"/"#rgb" hex, or undefined (use the theme
+ * default). Lets a widget blend into a host page that the SVG can't otherwise
+ * paint over (e.g. an iframe's white page showing through rounded corners).
+ */
+export function resolveBg(req: VercelRequest): string | undefined {
+  const t = q(req, "transparent");
+  if (t !== undefined && t !== "0" && t !== "false") return "transparent";
+  const bg = q(req, "bg");
+  if (!bg) return undefined;
+  const v = bg.trim().toLowerCase();
+  if (v === "transparent" || v === "none" || v === "clear") return "transparent";
+  if (/^#?([0-9a-f]{3}|[0-9a-f]{6})$/.test(v)) return v.startsWith("#") ? v : "#" + v;
+  return undefined;
+}
+
 const CACHE =
   "public, max-age=0, s-maxage=300, stale-while-revalidate=600";
 
@@ -23,9 +40,10 @@ export function sendSvg(res: VercelResponse, svg: string): void {
 export function sendError(
   res: VercelResponse,
   err: unknown,
-  themeName?: string
+  themeName?: string,
+  bg?: string
 ): void {
-  const theme = getTheme(themeName);
+  const theme = getTheme(themeName, bg);
   const msg = err instanceof Error ? err.message : "Unknown error";
   const svg = card({
     width: 460,

@@ -97,8 +97,15 @@ A connected R32 → Final tree built from the official knockout topology. Slots 
 |-------|--------|--------|---------|
 | `tz`  | `/match`, `/countdown`, `/team`, `/today` | Any [IANA timezone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (e.g. `Europe/London`, `Asia/Tokyo`) | `UTC` |
 | `theme` | all | `dark`, `light` | `dark` |
+| `bg` | all | `transparent` (or a hex like `1c1c1c` / `#1c1c1c`) | theme default |
 | `id` | `/group` | Group letter `A`–`L` | `A` |
 | `id` | `/team` | Team code/name (e.g. `USA`, `ESP`, `Brazil`) | `USA` |
+
+> **Transparent background.** Embedding a panel in a dashboard or page (e.g. via
+> an `<iframe>`) can show a white frame around the card, because the SVG's rounded
+> corners reveal the host page behind it. Add `?bg=transparent` to drop the panel
+> background so the host shows through, or `?bg=1c1c1c` to match a specific color.
+> Example: `…/countdown?theme=dark&bg=transparent`.
 
 ## GitHub Action — commit the panels into your repo
 

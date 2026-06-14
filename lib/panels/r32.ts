@@ -20,10 +20,11 @@ const X = { dot: 20, rank: 36, flag: 52, name: 88, grp: 300, gd: 388, pts: 450 }
 
 export interface R32Opts {
   theme: string | undefined;
+  bg?: string;
 }
 
 export function renderR32(matches: Match[], opts: R32Opts): string {
-  const theme = getTheme(opts.theme);
+  const theme = getTheme(opts.theme, opts.bg);
   const ranking = thirdPlaceRanking(computeGroups(matches));
 
   const height = TOP + ranking.length * ROW_H + CUT_GAP + 24;
