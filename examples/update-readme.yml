@@ -28,6 +28,10 @@ jobs:
           panels: "countdown,match,r32,bracket,team?id=USA"
           tz: "America/New_York"
           theme: "dark"
+          # Fetches from the shared demo by default. If you've deployed your own
+          # (recommended — see the repo's Deploy section), point at it so even
+          # these scheduled fetches run on your account:
+          # base-url: "https://<your-project>.vercel.app"
 
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:

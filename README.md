@@ -11,6 +11,8 @@
 > Built on the free, public-domain [openfootball](https://github.com/openfootball/worldcup.json) dataset. Kickoff times convert to **your** timezone. Light and dark themes included.
 >
 > **▶ [Live demo + embed builder](https://wc26-widget.vercel.app):** pick a panel, team, and timezone, then copy the snippet.
+>
+> ⚠️ **The hosted `wc26-widget.vercel.app` is a limited demo** — heavily cached and rate-limited, so it can lag and may pause under load. To get the full tool (always-fresh panels that won't go down), **[deploy your own free copy](#deploy)** in ~2 minutes and embed that URL. It's the intended way to use the widget.
 
 ---
 
