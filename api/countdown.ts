@@ -15,7 +15,8 @@ export default async function handler(
       renderCountdown(matches, {
         tz: safeTimeZone(q(req, "tz")),
         theme: q(req, "theme"), bg: resolveBg(req),
-      })
+      }),
+      "daily"
     );
   } catch (err) {
     sendError(res, err, q(req, "theme"), resolveBg(req));

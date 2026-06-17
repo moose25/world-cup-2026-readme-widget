@@ -27,12 +27,33 @@ export function resolveBg(req: VercelRequest): string | undefined {
   return undefined;
 }
 
-const CACHE =
-  "public, max-age=0, s-maxage=300, stale-while-revalidate=600";
+/**
+ * How long a panel may be served from cache. The lever that keeps us inside
+ * Vercel's free tier: a positive `max-age` lets GitHub's image proxy (Camo) and
+ * browsers serve repeat README views without ever touching our origin, and
+ * `s-maxage` bounds how often the edge re-invokes the function. `live` panels
+ * carry scores/standings that move during matches, so they stay fresh-ish;
+ * `daily` panels only change about once a day and can cache far longer.
+ */
+export type CacheProfile = "live" | "daily";
 
-export function sendSvg(res: VercelResponse, svg: string): void {
+const CACHE_CONTROL: Record<CacheProfile, string> = {
+  live: "public, max-age=300, s-maxage=300, stale-while-revalidate=86400",
+  daily: "public, max-age=1800, s-maxage=3600, stale-while-revalidate=86400",
+};
+
+export function sendSvg(
+  res: VercelResponse,
+  svg: string,
+  profile: CacheProfile = "live"
+): void {
+  // The shared demo instance (deploy with WC26_DEMO set) caps freshness so it
+  // stays cheap to host: every panel is pinned to the long `daily` cache, no
+  // matter how live its data is. Self-hosted deployments leave the var unset
+  // and get the per-panel freshness above.
+  const effective: CacheProfile = process.env.WC26_DEMO ? "daily" : profile;
   res.setHeader("Content-Type", "image/svg+xml; charset=utf-8");
-  res.setHeader("Cache-Control", CACHE);
+  res.setHeader("Cache-Control", CACHE_CONTROL[effective]);
   res.status(200).send(svg);
 }
 

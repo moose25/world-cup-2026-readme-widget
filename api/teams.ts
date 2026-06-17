@@ -25,7 +25,7 @@ export default async function handler(
     res.setHeader("Content-Type", "application/json; charset=utf-8");
     res.setHeader(
       "Cache-Control",
-      "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+      "public, max-age=1800, s-maxage=3600, stale-while-revalidate=86400"
     );
     res.status(200).json({ count: teams.length, teams });
   } catch (err) {

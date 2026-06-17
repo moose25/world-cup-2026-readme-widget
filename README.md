@@ -16,7 +16,12 @@
 
 ## Add it to your README
 
-Paste a line, swap in your deployment URL, done. (Deploy your own in ~2 minutes, see [Deploy](#deploy), or use the demo instance.)
+**Host it on your own free account, it takes ~2 minutes** and keeps your panels fast and always-on. Pick one:
+
+- **[Deploy your own Vercel project](#deploy)** and embed `https://<your-project>.vercel.app/…` — one click, the free tier is plenty.
+- **[Use the GitHub Action](#github-action-commit-the-panels-into-your-repo)** to commit the SVGs straight into your repo on a schedule — no live server at view time at all.
+
+The snippets below use the public demo host (`wc26-widget.vercel.app`) so they render here, but it's **heavily cached and meant for trying things out, not permanent embeds** — swap in your own deployment URL for anything you'll keep.
 
 ```markdown
 <!-- Countdown to kickoff, in your timezone -->
@@ -125,9 +130,11 @@ Prefer not to depend on the live server at view time? This repo doubles as a Git
 
 A full, copy-paste workflow lives in [examples/update-readme.yml](examples/update-readme.yml).
 
+> The Action fetches from the public demo by default. If you've [deployed your own](#deploy), add `base-url: https://<your-project>.vercel.app` so even the scheduled fetches run on your account.
+
 ## How it works
 
-- **Data:** the public-domain [openfootball/worldcup.json](https://github.com/openfootball/worldcup.json) feed, no API key, no rate limits. Results land after each match; a `~5 min` server cache plus HTTP `s-maxage` keeps it fresh without hammering the source.
+- **Data:** the public-domain [openfootball/worldcup.json](https://github.com/openfootball/worldcup.json) feed, no API key, no rate limits. Results land after each match; a `~5 min` in-process cache plus per-panel HTTP `Cache-Control` (live panels short, time-based panels like the countdown longer) keeps it fresh without hammering the source or the renderer.
 - **Rendering:** each endpoint is a tiny Vercel serverless function that returns an SVG string. Zero client JS; renders identically in a README, a webpage, or an `<img>` tag.
 - **"Near-live", not real-time:** GitHub proxies README images through its camo cache, so updates land within minutes, not seconds, which is perfect for a tournament, and it means true in-match second-by-second scores need a keyed API (on the roadmap).
 - **Qualification math:** tiebreakers implemented are points → goal difference → goals scored → name. FIFA's full ladder then adds head-to-head, fair-play, and drawing of lots; those edge cases are a known [TODO](#roadmap).
@@ -145,12 +152,20 @@ npm run typecheck
 
 ## Deploy
 
+The recommended way to use the widget: your own free Vercel project, so your panels run on your account, not a shared demo. One click —
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/moose25/world-cup-2026-readme-widget)
+
+— or from the CLI:
+
 ```bash
 npm i -g vercel
 vercel            # follow the prompts; your panels are live at <project>.vercel.app/match
 ```
 
-No environment variables required. (Optional: set `WC26_DATA_URL` to point at a mirror of the dataset.)
+No environment variables required. (Optional: `WC26_DATA_URL` to point at a dataset mirror.)
+
+> The public `wc26-widget.vercel.app` demo runs with **`WC26_DEMO=1`**, which pins every panel to a long cache so the shared instance stays inside the free tier. Leave that variable **unset** on your own deployment to get per-panel freshness — live panels (scores, standings) update within ~5 minutes.
 
 ## Features
 
