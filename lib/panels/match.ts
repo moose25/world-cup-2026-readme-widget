@@ -88,8 +88,12 @@ export function renderMatch(matches: Match[], opts: MatchOpts): string {
   body.push(...teamCluster(m.team1, 92, theme));
   body.push(...teamCluster(m.team2, W - 92, theme));
 
-  // Center: score for live/ft, "vs" otherwise.
-  if (state === "upcoming") {
+  // Center: the score when we actually have one, "vs" otherwise. A match can
+  // be in the time-based "live" window before any score data exists (the feed
+  // carries no in-progress scores — see the roadmap), so guard on the numbers
+  // being present rather than on state alone, or we'd print "null – null".
+  const hasScore = m.score1 !== null && m.score2 !== null;
+  if (!hasScore) {
     body.push(
       text("vs", {
         x: W / 2,
